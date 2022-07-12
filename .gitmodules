@@ -1,0 +1,6 @@
+[submodule "FLIP"]
+	path = FLIP
+	url = https://github.com/J-SNACKKB/FLIP.git
+[submodule "biotrainer"]
+	path = biotrainer
+	url = https://github.com/sacdallago/biotrainer.git
