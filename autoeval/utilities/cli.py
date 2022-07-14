@@ -13,7 +13,9 @@ def create_parser():
 
     - protocol: the name of the protocol to use (from the available ones in biotrainer). 
         Allows to change the specified one in the config file.
-    
+
+    - working_dir: the path to the folder where the needed files and results will be saved.
+
     - -e or --embedder: the name of the embedder to use (from the available ones in bio-embeddings).
         Allows to change the specified one in the config file.
     
@@ -27,6 +29,7 @@ def create_parser():
     parser = argparse.ArgumentParser(description="Train and evaluate different bioembedding models using biotrainer.")
     parser.add_argument("split", choices = split_dict.keys(), type=str, help="The split to train and evaluate. Options: {}.".format(split_dict.keys()))
     parser.add_argument("protocol", choices=protocols, type=str, help="The protocol to use. Options: residue_to_class, sequence_to_class, sequence_to_sequence.")
+    parser.add_argument("working_dir", type=str, help="The path to the folder to save the needed files and results.")
     parser.add_argument("-e", "--embedder", type=str, help="The embedder to use.")
     parser.add_argument("-m", "--model", type=str, help="The model to use.")
     parser.add_argument("-c", "--config", help="Config file different from the provided one in configsbank.", type=str, default=None)
