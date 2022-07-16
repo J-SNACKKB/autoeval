@@ -2,6 +2,8 @@
 
 This repository contains the AutoEval module, which allows to auto evaluate FLIP datasets using [bio-trainer](https://github.com/sacdallago/biotrainer) to train the models and [bio-embeddings](https://github.com/sacdallago/bio_embeddings) to embed the proteins.
 
+Together with the scripts, this repository also contains a bank of optimal or base configurations (in the `configsbank` folder) for each of the available datasets in FLIP. These configuration files are general versions for each dataset and they are modified by the script. The expected to be usually changed parameters (embedder_name and model_choice) can be changed using input parameters. A different configuration file can be used using the input parameters, as explained below.
+
 ## How to run AutoEval
 
 AutoEval can be executed:
@@ -28,10 +30,10 @@ The available input parameters are:
 | Parameter | Usage |
 | --- | --- |
 | `split` | Name of the split. It should be indicated using the abbreviations in the table below. |
-| `protocol` | Protocol to use from [the available ones in bio-trainer](TODO). |
+| `protocol` | Protocol to use from [the available ones in bio-trainer](https://github.com/sacdallago/biotrainer/blob/main/README.md). |
 | `working_dir` | Path to the folder to save the required files and results. |
-| `-e` / `--embedder` | To indicate the embedder to use if different from the one in the config file. It should be one from [the ones available in bio-embeddings](TODO). |
-| `-m` / `--model` | To indicate the model to use if different fro the one in the config file. It houls be one form [the ones available in bio-trainer](TODO) |
+| `-e` / `--embedder` | To indicate the embedder to use if different from the one in the config file. It should be one from [the ones available in bio-embeddings](https://docs.bioembeddings.com/v0.2.3/api/bio_embeddings.embed.html). |
+| `-m` / `--model` | To indicate the model to use if different fro the one in the config file. It houls be one form [the ones available in bio-trainer](https://github.com/sacdallago/biotrainer/tree/main/biotrainer/models) |
 | `-c` / `--config` | Config file different from the provided one in configsbank for the indicated `split`. |
 
 ## Recommended configurations per dataset
