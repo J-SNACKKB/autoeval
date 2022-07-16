@@ -3,4 +3,4 @@ import sys
 
 from autoeval.utilities.cli import main as autoeval_main
 
-autoeval_main(sys.argv[1:])
+autoeval_main(sys.argv)

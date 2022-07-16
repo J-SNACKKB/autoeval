@@ -1,7 +1,7 @@
 import os
+import subprocess
 from pathlib import Path
 
-import subprocess
 import logging
 
 from .settings import configs_bank
@@ -16,27 +16,26 @@ def execute(args):
     if args.config is None:
         config_file = configs_bank / (args.split + '.yml')
     else:
-        config_file = Path(args.config)
-    logger.info('The selected configuration file to load is in {}'.format(config_file))
+        config_file = Path(args.config).resolve()
+    logger.info('The selected configuration file to load is in {}.'.format(config_file))
 
     # Create and set path to the folder to place the needed files and results (working directory)
-    if not os.path.isdir(args.working_dir):
-        os.makedirs(args.working_dir)
-    working_dir = Path(args.working_dir)
-    logger.info('Needed files and results will be saved in {}'.format(working_dir))
+    working_dir = Path(args.working_dir).resolve()
+    if not os.path.isdir(working_dir):
+        os.makedirs(working_dir)
+    logger.info('Needed files and results will be saved in {}.'.format(working_dir))
 
     # Prepare the data
     sequences, labels = prepare_data(args.split, args.protocol, working_dir) 
-    logger.info('Data prepared')
+    logger.info('Data prepared.')
 
     # Prepare configuration file with possible modifications (in args)
     prepare_configfile(working_dir, config_file, sequences, labels, args)
 
-    # TODO: Change execution of biotrainer
+    # TODO: Change to a better execution of biotrainer
     # Run biotrainer
     logger.info('Executing biotrainer.')
-    #subprocess.call(["poetry", "run", "biotrainer", "./results-{}/config.yml".format(args.split)])
     os.chdir(working_dir)
-    subprocess.call(["python3", "../../../biotrainer/run-biotrainer.py", "./config.yml"])
+    subprocess.call(["python3", (Path(os.path.dirname(os.path.abspath(__file__))) / '../biotrainer/run-biotrainer.py').resolve(), (Path('') / 'config.yml').resolve()])
     logger.info('Done.')
 

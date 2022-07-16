@@ -52,34 +52,43 @@ def protein_to_value_fasta(split_dir, destination_sequences_dir):
 
 def prepare_data(split, protocol, working_dir):
     # TODO: Add other possible input files like masks
-    # Check if the sequence.fasta and labels.fasta files exists
-    if os.path.exists(working_dir / 'sequence.fasta') and os.path.exists(working_dir / 'labels.fasta'):
-        logger.info('Sequence and labels files already exists. Skipping data preparation.')
-    else:
-        destination_sequences_dir = working_dir / 'sequences.fasta'
-        destination_labels_dir = working_dir / 'labels.fasta'
+    destination_sequences_dir = working_dir / 'sequences.fasta'
+    destination_labels_dir = working_dir / 'labels.fasta'
 
-        # Check if the split is already in FASTA format (sequences.fasta + name_of_split.fasta (with the labels))
-        if os.path.exists(splits / split.split(' ')[0] / 'splits' / 'sequences.fasta') and os.path.exists(splits / split.split('_')[0] / 'splits' / (split_dict[split] + '.fasta')):
-            shutil.copyfile(splits / split.split(' ')[0] / 'splits' / 'sequences.fasta', destination_sequences_dir)
-            shutil.copyfile(splits / split.split('_')[0] / 'splits' / (split_dict[split] + '.fasta'), destination_labels_dir)
-        else:
-            # If the split is not already in FASTA format we convert CSV to FASTA
-            split_dir = splits / split.split('_')[0] / 'splits' / (split_dict[split] + '.csv')
-            
-            if protocol == 'residue_to_class':
-                logger.info('Converting CSV to FASTA for residue to class protocol.')
-                residue_to_class_fasta(split_dir, destination_sequences_dir, destination_labels_dir)
-                return destination_sequences_dir, destination_labels_dir
-            elif protocol == 'sequence_to_class':
-                logger.info('Converting CSV to FASTA for sequence to class protocol.')
-                protein_to_value_fasta(split_dir, destination_sequences_dir, destination_labels_dir)
-                return destination_sequences_dir, destination_labels_dir
-            elif protocol == 'sequence_to_value':
-                logger.info('Converting CSV to FASTA for sequence to value protocol.')
-                protein_to_class_fasta(split_dir, destination_sequences_dir)
-                return destination_sequences_dir, None
-            elif protocol == 'residue_to_value':
-                logger.info('Converting CSV to FASTA for residue to value protocol.')
-                protein_to_value_fasta(split_dir, destination_sequences_dir)
-                return destination_sequences_dir, None
+    # Check if the splits of the dataset are unzipped. If not, unzip them
+    if not os.path.isdir(splits / split_dict[split][0] / 'splits'):
+        logger.info('Splits of the dataset are not unzipped. Unzipping them.')
+        shutil.unpack_archive(splits / split_dict[split][0] / 'splits.zip', splits / split_dict[split][0] / 'splits', "zip")
+        logger.info('Splits of the dataset unzipped.')
+
+    # Check if the split is already in FASTA format. If yes, it at least contains the sequences.fasta file
+    if os.path.exists(splits / split_dict[split][0] / 'splits' / 'sequences.fasta'):
+        logger.info('Split already in FASTA format. Conversion not needed. Copying files direclty.')
+        shutil.copyfile(splits / split_dict[split][0] / 'splits' / 'sequences.fasta', destination_sequences_dir)
+        
+        if protocol == 'residue_to_class':
+            shutil.copyfile(splits / split_dict[split][0] / 'splits' / (split_dict[split][1] + '.fasta'), destination_labels_dir)
+            return destination_sequences_dir, destination_labels_dir
+
+        return destination_sequences_dir
+    else:
+        # If the split is not already in FASTA format we convert CSV to FASTA
+        logger.info('Split in CSV format.')
+
+        split_dir = splits / split_dict[split][0] / 'splits' / (split_dict[split][1] + '.csv')
+
+        if protocol == 'sequence_to_class':
+            logger.info('Converting CSV to FASTA for sequence to class protocol.')
+            protein_to_value_fasta(split_dir, destination_sequences_dir, destination_labels_dir)
+            return destination_sequences_dir, None
+        elif protocol == 'sequence_to_value':
+            logger.info('Converting CSV to FASTA for sequence to value protocol.')
+            protein_to_class_fasta(split_dir, destination_sequences_dir)
+            return destination_sequences_dir, None
+        elif protocol == 'residue_to_class':
+            logger.info('Converting CSV to FASTA for residue to class protocol.')
+            residue_to_class_fasta(split_dir, destination_sequences_dir, destination_labels_dir)
+            return destination_sequences_dir, destination_labels_dir
+        elif protocol == 'residue_to_value':
+            logger.info('Converting CSV to FASTA for residue to value protocol.')
+            # TODO: Standardization pending in biotrainer 

@@ -2,7 +2,7 @@ import argparse
 import logging
 
 from .executer import execute
-from .settings import init, split_dict, protocols
+from .settings import split_dict, protocols
 
 
 def create_parser():
@@ -28,7 +28,7 @@ def create_parser():
     
     parser = argparse.ArgumentParser(description="Train and evaluate different bioembedding models using biotrainer.")
     parser.add_argument("split", choices = split_dict.keys(), type=str, help="The split to train and evaluate. Options: {}.".format(split_dict.keys()))
-    parser.add_argument("protocol", choices=protocols, type=str, help="The protocol to use. Options: residue_to_class, sequence_to_class, sequence_to_sequence.")
+    parser.add_argument("protocol", choices=protocols, type=str, help="The protocol to use.")
     parser.add_argument("working_dir", type=str, help="The path to the folder to save the needed files and results.")
     parser.add_argument("-e", "--embedder", type=str, help="The embedder to use.")
     parser.add_argument("-m", "--model", type=str, help="The model to use.")
@@ -36,21 +36,18 @@ def create_parser():
 
     return parser
 
-def main():
+def main(args=None):
     """
     Entry point to AutoEval
     """
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     logging.captureWarnings(True)
 
-    # Initialize application settings
-    init()
-
     # Create parser and catch arguments
     parser = create_parser()
-    args = parser.parse_args()
+    arguments = parser.parse_args()
 
-    execute(args)
+    execute(arguments)
     
 if __name__ == '__main__':
     main()

@@ -27,7 +27,7 @@ The available input parameters are:
 
 | Parameter | Usage |
 | --- | --- |
-| `split` | Name of the split. It should be indicated using the abbreviations in the [table below](##available-splits). |
+| `split` | Name of the split. It should be indicated using the abbreviations in the table below. |
 | `protocol` | Protocol to use from [the available ones in bio-trainer](TODO). |
 | `working_dir` | Path to the folder to save the required files and results. |
 | `-e` / `--embedder` | To indicate the embedder to use if different from the one in the config file. It should be one from [the ones available in bio-embeddings](TODO). |

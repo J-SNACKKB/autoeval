@@ -1,8 +1,7 @@
-import logging
-
 import yaml
-
 import shutil
+
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,7 @@ def prepare_configfile(working_dir, config_file, sequences, labels, args):
             logger.info('Config file uses {} embedder. Changed by {}'.format(item["value"], args.embedder))
             config["embedder_name"] = args.embedder
         elif item == "model_choice" and args.model is not None:
-            logger = logger.info('Config file uses {} model. Changed by {}'.format(item["value"], args.model))
+            logger.info('Config file uses {} model. Changed by {}'.format(item["value"], args.model))
             config["model_choice"] = args.model
 
     with open(working_dir / 'config.yml', 'w') as cfile:
