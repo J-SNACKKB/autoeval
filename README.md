@@ -10,7 +10,7 @@ AutoEval can be executed:
 
 - via Poetry:
 ```bash
-# Make sure you have [poetry](https://python-poetry.org/) installed
+# Make sure you have poetry installed
 curl -sSL https://install.python-poetry.org/ | python3 - --version 1.1.13
 
 # Install dependencies and AutoEval via poetry
