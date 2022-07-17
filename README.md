@@ -8,6 +8,23 @@ Together with the scripts, this repository also contains a bank of optimal or ba
 
 AutoEval can be executed:
 
+- via Poetry:
+```bash
+# Make sure you have [poetry](https://python-poetry.org/) installed
+curl -sSL https://install.python-poetry.org/ | python3 - --version 1.1.13
+
+# Install dependencies and AutoEval via poetry
+poetry install
+
+# Run
+poetry run python3 run-autoeval.py split_abbreviation protocol /path/to/working_directory [--embedder embedder_name] [--model model_name] [--config config_name]
+```
+
+Example:
+```bash
+poetry run python3 scl_1 residue_to_class ./scl_1 --embedder prottrans_t5_xl_u50 --model CNN
+```
+
 - via Command Line:
 
 ```bash
