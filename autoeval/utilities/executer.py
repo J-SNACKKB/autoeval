@@ -4,7 +4,7 @@ from pathlib import Path
 
 import logging
 
-from .settings import configs_bank
+from .settings import configs_bank, split_dict
 from ..managers.data import prepare_data
 from ..managers.configfiles import prepare_configfile
 
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 def execute(args):
     # Get path of the configuration file from configsbank or the provided one
     if args.config is None:
-        config_file = configs_bank / (args.split + '.yml')
+        config_file = configs_bank / (split_dict[args.split][0] + '.yml')
     else:
         config_file = Path(args.config).resolve()
     logger.info('The selected configuration file to load is in {}.'.format(config_file))
@@ -32,7 +32,6 @@ def execute(args):
     # Prepare configuration file with possible modifications (in args)
     prepare_configfile(working_dir, config_file, sequences, labels, args)
 
-    # TODO: Change to a better execution of biotrainer
     # Run biotrainer
     logger.info('Executing biotrainer.')
     os.chdir(working_dir)

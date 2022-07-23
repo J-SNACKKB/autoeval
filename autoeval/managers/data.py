@@ -79,7 +79,7 @@ def prepare_data(split, protocol, working_dir):
 
         if protocol == 'sequence_to_class':
             logger.info('Converting CSV to FASTA for sequence to class protocol.')
-            protein_to_value_fasta(split_dir, destination_sequences_dir, destination_labels_dir)
+            protein_to_value_fasta(split_dir, destination_sequences_dir)
             return destination_sequences_dir, None
         elif protocol == 'sequence_to_value':
             logger.info('Converting CSV to FASTA for sequence to value protocol.')
