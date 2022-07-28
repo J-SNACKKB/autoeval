@@ -1,5 +1,4 @@
 sequence_file: None
-labels_file: None
 protocol: sequence_to_class
 model_choice: FNN
 optimizer_choice: adam
