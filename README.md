@@ -56,16 +56,22 @@ The available input parameters are:
 
 ## Recommended configurations per dataset
 
-| Dataset | Recommended pLM Embeddings | Recommended Model | Available in Configsbank |
-| --- | :---: | :---: | :---: |
-| `AAV` | ? | ? | ❌ |
-| `GB1` | ? | ? | ❌ |
-| `Meltome` | ? | ? | ❌ |
-| `SCL` | ProtT5 | Light attention | ❌ |
-| `Bind` | ? | ? | ❌ |
-| `SAV` | ? | ? | ❌ |
-| `Secondary Structure` | ? | ? | ❌ |
-| `Conservation` | ? | ? | ❌ |
+| Dataset | Type of task | Recommended pLM Embeddings | Recommended model | Reference | Available in Configsbank |
+| --- | :---: | :---: | :---: | :---: | :---: |
+| `AAV` | ? | ? | ? | ❌ | ? |
+| `GB1` | ? | ? | ? | ❌ | ? |
+| `Meltome` | ? | ? | ? | ❌ | ? |
+| `SCL` | sequence_to_class | ProtT5 (ProtT5-XL-UniRef50) | Light attention | [[Stärk 2021](https://doi.org/10.1093/bioadv/vbab035)] | ⚠️ |
+| `Bind` | residue_to_class | ProtT5 (ProtT5-XL-UniRef50) | CNN | [[Littmann 2021](https://doi.org/10.1038/s41598-021-03431-4)] | ✅ |
+| `SAV` | residue_to_class | ProtT5 (ProtT5-XL-U50) | CNN | [[Marquet 2021](https://doi.org/10.1007/s00439-021-02411-y)] | ✅ |
+| `Secondary Structure` | ? | ? | ? | ❌ | ? |
+| `Conservation` | residue_to_class | ProtT5 (ProtT5-XL-U50) | CNN | [[Marquet 2021](https://doi.org/10.1007/s00439-021-02411-y)] | ✅ |
+
+Availability semaphore:
+- ✅: Available in configsbank in the closest possible way to the better configuration in the reference.
+- ⚠️: The best configuration is not possible due to, e.g., a lack of features (temporarily) in biotrainer. The best possible alternative is the one available.
+- ❌: Not available in configsbank. Somecases can be used anyhow under user's responsability.
+
 
 ## Available splits
 
