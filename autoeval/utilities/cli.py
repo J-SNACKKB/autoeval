@@ -18,6 +18,9 @@ def create_parser():
 
     - -e or --embedder: the name of the embedder to use (from the available ones in bio-embeddings).
         Allows to change the specified one in the config file.
+
+    - -f or --embeddingsfile: the path to the file containing the embeddings.
+        Allows to use precomputed embeddings.
     
     - -m or --model: the name of the model to use (from the available ones in biotrainer).
         Allows to change the specified one in the config file.
@@ -31,6 +34,7 @@ def create_parser():
     parser.add_argument("protocol", choices=protocols, type=str, help="The protocol to use.")
     parser.add_argument("working_dir", type=str, help="The path to the folder to save the needed files and results.")
     parser.add_argument("-e", "--embedder", type=str, help="The embedder to use.")
+    parser.add_argument("-f", "--embeddingsfile", type=str, help="The path to the file containing the embeddings.")
     parser.add_argument("-m", "--model", type=str, help="The model to use.")
     parser.add_argument("-c", "--config", help="Config file different from the provided one in configsbank.", type=str, default=None)
 

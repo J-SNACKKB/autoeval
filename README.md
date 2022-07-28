@@ -28,7 +28,7 @@ poetry run python3 scl_1 residue_to_class ./scl_1 --embedder prottrans_t5_xl_u50
 - via Command Line:
 
 ```bash
-python run-autoeval.py split_abbreviation protocol /path/to/working_directory [--embedder embedder_name] [--model model_name] [--config config_name]
+python run-autoeval.py split_abbreviation protocol /path/to/working_directory [--embedder embedder_name] [--embeddingsfile embeddings_path] [--model model_name] [--config config_name]
 ```
 
 Example:
@@ -50,6 +50,7 @@ The available input parameters are:
 | `protocol` | Protocol to use from [the available ones in bio-trainer](https://github.com/sacdallago/biotrainer/blob/main/README.md). |
 | `working_dir` | Path to the folder to save the required files and results. |
 | `-e` / `--embedder` | To indicate the embedder to use if different from the one in the config file. It should be one from [the ones available in bio-embeddings](https://docs.bioembeddings.com/v0.2.3/api/bio_embeddings.embed.html). |
+| `-f` / `--embeddingsfile` | To indicate the path to the file containing precomputed embeddings. |
 | `-m` / `--model` | To indicate the model to use if different fro the one in the config file. It houls be one form [the ones available in bio-trainer](https://github.com/sacdallago/biotrainer/tree/main/biotrainer/models) |
 | `-c` / `--config` | Config file different from the provided one in configsbank for the indicated `split`. |
 

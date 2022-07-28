@@ -25,6 +25,9 @@ def prepare_configfile(working_dir, config_file, sequences, labels, args):
         elif item == "embedder_name" and args.embedder is not None:
             logger.info('Config file uses {} embedder. Changed by {}'.format(item["value"], args.embedder))
             config["embedder_name"] = args.embedder
+        elif item == "embeddings_file" and args.embeddingsfile is not None:
+            logger.info('Config file uses {} embeddings file. Changed by {}'.format(item["value"], args.embeddingsfile))
+            config["embeddings_file"] = args.embeddingsfile
         elif item == "model_choice" and args.model is not None:
             logger.info('Config file uses {} model. Changed by {}'.format(item["value"], args.model))
             config["model_choice"] = args.model
