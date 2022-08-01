@@ -26,7 +26,7 @@ def execute(args):
     logger.info('Needed files and results will be saved in {}.'.format(working_dir))
 
     # Prepare the data
-    sequences, labels = prepare_data(args.split, args.protocol, working_dir) 
+    sequences, labels = prepare_data(args.split, args.protocol, working_dir, args.minsize, args.maxsize)
     logger.info('Data prepared.')
 
     # Prepare configuration file with possible modifications (in args)

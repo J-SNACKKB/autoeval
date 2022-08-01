@@ -27,6 +27,10 @@ def create_parser():
     
     - -c or --config: the path to the configuration file to use.
         If not provided, the default one for the split in configsbank will be used.
+
+    - -mins or --minsize: the minimum size of the proteins to use.
+    
+    - -maxs or --maxsize: the maximum size of the proteins to use.
     """
     
     parser = argparse.ArgumentParser(description="Train and evaluate different bioembedding models using biotrainer.")
@@ -37,6 +41,8 @@ def create_parser():
     parser.add_argument("-f", "--embeddingsfile", type=str, help="The path to the file containing the embeddings.")
     parser.add_argument("-m", "--model", type=str, help="The model to use.")
     parser.add_argument("-c", "--config", help="Config file different from the provided one in configsbank.", type=str, default=None)
+    parser.add_argument("-mins", "--minsize", help="Use proteins with more than minsize residues.", type=int, default=None)
+    parser.add_argument("-maxs", "--maxsize", help="Use proteins with less than maxsize residues.", type=int, default=None)
 
     return parser
 

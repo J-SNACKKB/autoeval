@@ -28,7 +28,9 @@ poetry run python3 scl_1 residue_to_class ./scl_1 --embedder prottrans_t5_xl_u50
 - via Command Line:
 
 ```bash
-python run-autoeval.py split_abbreviation protocol /path/to/working_directory [--embedder embedder_name] [--embeddingsfile embeddings_path] [--model model_name] [--config config_name]
+python run-autoeval.py split_abbreviation protocol /path/to/working_directory [--embedder embedder_name] [--embeddingsfile embeddings_path] \
+    [--model model_name] [--config config_name] \
+    [--minsize min_size] [--maxsize max_size]
 ```
 
 Example:
@@ -53,6 +55,8 @@ The available input parameters are:
 | `-f` / `--embeddingsfile` | To indicate the path to the file containing precomputed embeddings. |
 | `-m` / `--model` | To indicate the model to use if different fro the one in the config file. It houls be one form [the ones available in bio-trainer](https://github.com/sacdallago/biotrainer/tree/main/biotrainer/models) |
 | `-c` / `--config` | Config file different from the provided one in configsbank for the indicated `split`. |
+| `-mins` / `--minsize` | Use proteins with more than minsize residues. |
+| `-maxs` / `--maxsize` | Use proteins with less than maxsize residues. |
 
 ## Recommended configurations per dataset
 
