@@ -2,6 +2,8 @@ import os
 import subprocess
 from pathlib import Path
 
+from typing import Dict
+
 import logging
 
 from .settings import configs_bank, split_dict
@@ -11,7 +13,13 @@ from ..managers.configfiles import prepare_configfile
 logger = logging.getLogger(__name__)
 
 
-def execute(args):
+def execute(args: Dict[str, any]):
+    """
+    Main AutoEval function. It manages the entire execution.
+
+    :param args: dictionary with the execution arguments.
+    """
+
     # Get path of the configuration file from configsbank or the provided one
     if args.config is None:
         config_file = configs_bank / (split_dict[args.split][0] + '.yml')

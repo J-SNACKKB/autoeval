@@ -1,12 +1,25 @@
 import yaml
 import shutil
 
+from typing import Dict
+
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-def prepare_configfile(working_dir, config_file, sequences, labels, args):
+def prepare_configfile(working_dir: str, config_file: str, sequences: str, labels: str, args: Dict[str, any]):
+    """
+    Copies the config file to the working directory, replaces the paths to the sequences and labels files,
+    and modifies the different biotrainer input parameters as indicated in the execution arguments.
+
+    :param working_dir: path to the working diretory where the config file will be copied to
+    :param config_file: path to the config file to copy and modify
+    :param sequences: path to a valid FASTA file with the sequences
+    :param labels: path to a valid FASTA file with the labels
+    :param args: execution arguments
+    """
+    
     # Create copy of the configuration file
     shutil.copyfile(config_file, working_dir / 'config.yml')
     logger.info('Configuration file copied from {} to the working directory.'.format(config_file))
