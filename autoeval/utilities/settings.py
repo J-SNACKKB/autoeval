@@ -36,7 +36,7 @@ split_dict = {
     'sav_2': ['sav', 'human'],
     'sav_3': ['sav', 'only_savs'],  
     'secondary_structure': ['secondary_structure', 'sampled'],
-    'conservation': ['secondary_structure', 'sampled']
+    'conservation': ['conservation', 'sampled']
 }
 
 # Available protocols
