@@ -36,13 +36,13 @@ def prepare_configfile(working_dir: str, config_file: str, sequences: str, label
             logger.info('Modifying config file with labels file: {}'.format(labels))
             config["labels_file"] = str(labels).split('/')[-1]
         elif item == "embedder_name" and args.embedder is not None:
-            logger.info('Config file uses {} embedder. Changed by {}'.format(item["value"], args.embedder))
+            logger.info('Config file uses {} embedder. Changed by {}'.format(item, args.embedder))
             config["embedder_name"] = args.embedder
         elif item == "embeddings_file" and args.embeddingsfile is not None:
-            logger.info('Config file uses {} embeddings file. Changed by {}'.format(item["value"], args.embeddingsfile))
+            logger.info('Config file uses {} embeddings file. Changed by {}'.format(item, args.embeddingsfile))
             config["embeddings_file"] = args.embeddingsfile
         elif item == "model_choice" and args.model is not None:
-            logger.info('Config file uses {} model. Changed by {}'.format(item["value"], args.model))
+            logger.info('Config file uses {} model. Changed by {}'.format(item, args.model))
             config["model_choice"] = args.model
 
     with open(working_dir / 'config.yml', 'w') as cfile:
