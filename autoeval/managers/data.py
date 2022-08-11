@@ -33,6 +33,23 @@ def filter_fasta_entries(fasta_entries: List[any], min_size: int, max_size: int)
 
     return new_fasta_entries, ids_deleted_proteins
 
+def equilibrate_sequences(destination_sequences_dir: str, destination_labels_dir: str) -> Tuple[str, str]:
+    """
+    Filters sequences.fasta keeping only IDs in labels.fasta
+
+    :param destination_sequences_dir: path to sequences.fasta
+    :param destination_labels_dir: path to labels.fasta
+    :return: path to the sequences.fasta file and path to the labels.fasta file.
+    """
+    sequences_entries = read_FASTA(destination_sequences_dir)
+    labels_entries = read_FASTA(destination_labels_dir)
+
+    sequences_ids = set([entry.id for entry in sequences_entries])
+    labels_ids = set([entry.id for entry in labels_entries])
+
+    sequence_ids_to_delete = sequences_ids.difference(labels_ids)
+    delete_entries_FASTA(sequence_ids_to_delete, destination_sequences_dir)
+
 def residue_to_class_fasta(split_dir: str, destination_sequences_dir: str, destination_labels_dir: str):
     """
     Converts FLIP CSV files to biotrainer FASTA files for the residue to class protocol.
@@ -155,7 +172,7 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
 
     # Data already in FASTA format. Let's filter by minsize and maxsize
     if min_size is not None or max_size is not None:
-        logger.info('Filtering proteins by criterion: minsize = {} and maxsize = {}.'.format(min_size, max_size))
+        logger.info('Filtering proteins by citeria: minsize = {} and maxsize = {}.'.format(min_size, max_size))
 
         # Filter sequence.fasta
         logger.info("Filtering proteins from sequences.fasta.")
@@ -164,12 +181,19 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
         overwrite_FASTA(new_fasta_entries, destination_sequences_dir)
 
         # Flilter labels.fasta if exists
-        if (protocol == 'residue_to_class'):
+        if (destination_labels_dir is not None):
             logger.info("Filtering proteins from labels.fasta.")
             fasta_sequences_entries = read_FASTA(destination_labels_dir)
             delete_entries_FASTA(ids_deleted_proteins, destination_labels_dir)
 
         logger.info('Proteins filtered.')
 
+    # Splits with labels.fasta have a sequences.fasta with all the sequences in the datasets. Those not in labes.fasta must be removed from sequences.fasta.
+    if (destination_labels_dir is not None):
+        logger.info('Equilibrating sequences.fasta according to labels.fasta as needed for biotrainer protocols with labels.fasta as input.')
+        equilibrate_sequences(destination_sequences_dir, destination_labels_dir)
+
     return destination_sequences_dir, destination_labels_dir
-        
+
+
+
