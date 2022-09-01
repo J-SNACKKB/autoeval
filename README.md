@@ -17,12 +17,15 @@ curl -sSL https://install.python-poetry.org/ | python3 - --version 1.1.13
 poetry install
 
 # Run
-poetry run python3 run-autoeval.py split_abbreviation protocol /path/to/working_directory [--embedder embedder_name] [--model model_name] [--config config_name]
+poetry run python3 run-autoeval.py split_abbreviation protocol /path/to/working_directory [--embedder embedder_name] [--embeddingsfile embeddings_path] \
+    [--model model_name] [--config config_name] \
+    [--minsize min_size] [--maxsize max_size]
+    [--mask]
 ```
 
 Example:
 ```bash
-poetry run python3 scl_1 residue_to_class ./scl_1 --embedder prottrans_t5_xl_u50 --model CNN
+poetry run python3 run-autoeval.py scl_1 residue_to_class ./scl_1 --embedder prottrans_t5_xl_u50 --model CNN
 ```
 
 - via Command Line:
@@ -31,6 +34,7 @@ poetry run python3 scl_1 residue_to_class ./scl_1 --embedder prottrans_t5_xl_u50
 python run-autoeval.py split_abbreviation protocol /path/to/working_directory [--embedder embedder_name] [--embeddingsfile embeddings_path] \
     [--model model_name] [--config config_name] \
     [--minsize min_size] [--maxsize max_size]
+    [--mask]
 ```
 
 Example:
@@ -57,6 +61,7 @@ The available input parameters are:
 | `-c` / `--config` | Config file different from the provided one in configsbank for the indicated `split`. |
 | `-mins` / `--minsize` | Use proteins with more than minsize residues. |
 | `-maxs` / `--maxsize` | Use proteins with less than maxsize residues. |
+| `-mask` / `--mask` | If set, use the masks in the file mask.fasta from the working directory to filter the residues. |
 
 ## Recommended configurations per dataset
 

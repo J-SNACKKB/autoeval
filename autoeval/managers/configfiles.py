@@ -36,14 +36,18 @@ def prepare_configfile(working_dir: str, config_file: str, sequences: str, label
             logger.info('Modifying config file with labels file: {}'.format(labels))
             config["labels_file"] = str(labels).split('/')[-1]
         elif item == "embedder_name" and args.embedder is not None:
-            logger.info('Config file uses {} embedder. Changed by {}'.format(item, args.embedder))
+            logger.info('Config file uses {} embedder. Changed by {}'.format(config["embedder_name"], args.embedder))
             config["embedder_name"] = args.embedder
         elif item == "embeddings_file" and args.embeddingsfile is not None:
-            logger.info('Config file uses {} embeddings file. Changed by {}'.format(item, args.embeddingsfile))
+            logger.info('Config file uses {} embeddings file. Changed by {}'.format(config["embeddings_file"], args.embeddingsfile))
             config["embeddings_file"] = args.embeddingsfile
         elif item == "model_choice" and args.model is not None:
-            logger.info('Config file uses {} model. Changed by {}'.format(item, args.model))
+            logger.info('Config file uses {} model. Changed by {}'.format(config["model_choice"], args.model))
             config["model_choice"] = args.model
+    
+    if args.mask:
+        logger.info('Config file does not use a mask. Changed to use {}'.format(working_dir / "mask.fasta"))
+        config["mask_file"] = "mask.fasta"
 
     with open(working_dir / 'config.yml', 'w') as cfile:
         yaml.dump(config, cfile)

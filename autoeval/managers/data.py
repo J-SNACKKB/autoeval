@@ -117,7 +117,7 @@ def protein_to_value_fasta(split_dir: str, destination_sequences_dir: str):
             sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'], row['set'], validation))
             sequences_file.write('{}\n'.format(row['sequence']))
 
-def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max_size: int) -> Tuple[str, str]:
+def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max_size: int, mask: bool) -> Tuple[str, str]:
     """
     Copies the data files from FLIP to the working directory depending on the selected split and protocol. 
     The data files are then filtered according to the min_size and max_size parameters.
@@ -127,11 +127,12 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
     :param working_dir: path to the working directory.
     :param min_size: minimum size of the proteins to be kept.
     :param max_size: maximum size of the proteins to be kept.
+    :param mask: whether to mask the sequences or not.
     :return: path to the sequences.fasta file and path to the labels.fasta file.
     """
-    # TODO: Add other possible input files like masks
     destination_sequences_dir = working_dir / 'sequences.fasta'
     destination_labels_dir = working_dir / 'labels.fasta'
+    destination_masks_dir = working_dir / 'mask.fasta'
 
     # Check if the splits of the dataset are unzipped. If not, unzip them
     if not os.path.isdir(splits / split_dict[split][0] / 'splits'):
@@ -139,7 +140,7 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
         shutil.unpack_archive(splits / split_dict[split][0] / 'splits.zip', splits / split_dict[split][0] / 'splits', "zip")
         logger.info('Splits of the dataset unzipped.')
 
-    # Check if the split is already in FASTA format. If yes, it at least contains the sequences.fasta file
+    # Check if the split is already in FASTA format. If already in FASTA, it at least contains the sequences.fasta file
     if os.path.exists(splits / split_dict[split][0] / 'splits' / 'sequences.fasta'):
         logger.info('Split already in FASTA format. Conversion not needed. Copying files direclty.')
         shutil.copyfile(splits / split_dict[split][0] / 'splits' / 'sequences.fasta', destination_sequences_dir)
@@ -148,6 +149,10 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
             shutil.copyfile(splits / split_dict[split][0] / 'splits' / (split_dict[split][1] + '.fasta'), destination_labels_dir)
         else:
             destination_labels_dir = None
+
+        # Check if exists a mask file. If exists, copy it to the working directory
+        if os.path.exists(splits / split_dict[split][0] / 'splits' / 'mask.fasta') and mask:
+            shutil.copyfile(splits / split_dict[split][0] / 'splits' / 'mask.fasta', destination_masks_dir)
 
     else:
         # If the split is not already in FASTA format we convert CSV to FASTA

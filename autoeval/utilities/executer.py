@@ -34,7 +34,7 @@ def execute(args: Dict[str, any]):
     logger.info('Needed files and results will be saved in {}.'.format(working_dir))
 
     # Prepare the data
-    sequences, labels = prepare_data(args.split, args.protocol, working_dir, args.minsize, args.maxsize)
+    sequences, labels = prepare_data(args.split, args.protocol, working_dir, args.minsize, args.maxsize, args.mask)
     logger.info('Data prepared.')
 
     # Prepare configuration file with possible modifications (in args)
