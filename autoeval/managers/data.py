@@ -177,7 +177,7 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
 
     # Data already in FASTA format. Let's filter by minsize and maxsize
     if min_size is not None or max_size is not None:
-        logger.info('Filtering proteins by citeria: minsize = {} and maxsize = {}.'.format(min_size, max_size))
+        logger.info('Filtering proteins by criteria: minsize = {} and maxsize = {}.'.format(min_size, max_size))
 
         # Filter sequence.fasta
         logger.info("Filtering proteins from sequences.fasta.")
