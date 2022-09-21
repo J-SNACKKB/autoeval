@@ -25,7 +25,7 @@ poetry run python3 run-autoeval.py split_abbreviation protocol /path/to/working_
 
 Example:
 ```bash
-poetry run python3 run-autoeval.py scl_1 residue_to_class ./scl_1 --embedder prottrans_t5_xl_u50 --model CNN
+poetry run python3 run-autoeval.py scl_1 residues_to_class ./scl_1 --embedder prottrans_t5_xl_u50
 ```
 
 - via Command Line:
@@ -39,7 +39,7 @@ python run-autoeval.py split_abbreviation protocol /path/to/working_directory [-
 
 Example:
 ```bash
-python run-autoeval.py scl_1 residue_to_class ./scl_1 --embedder prottrans_t5_xl_u50 --model CNN
+python run-autoeval.py scl_1 residues_to_class ./scl_1 --embedder prottrans_t5_xl_u50
 ```
 
 - via Docker:
@@ -67,12 +67,12 @@ The available input parameters are:
 
 | Dataset | Type of task | Recommended pLM Embeddings | Recommended model | Reference | Available in Configsbank |
 | --- | :---: | :---: | :---: | :---: | :---: |
-| `AAV` | ? | ? | ? | ? | ❌ |
-| `GB1` | ? | ? | ? | ? | ❌ |
-| `Meltome` | ? | ? | ? | ? | ❌ |
-| `SCL` | sequence_to_class | ProtT5 (ProtT5-XL-UniRef50) | Light attention | [[Stärk 2021](https://doi.org/10.1093/bioadv/vbab035)] | ⚠️ |
+| `AAV` | sequence_to_value | - | FNN | [[Dallago 2021](https://www.biorxiv.org/content/10.1101/2021.11.09.467890v2.abstract)] | ⚠️ |
+| `GB1` | sequence_to_value | - | FNN | [[Dallago 2021](https://www.biorxiv.org/content/10.1101/2021.11.09.467890v2.abstract)] | ⚠️ |
+| `Meltome` | sequence_to_value | - | FNN | [[Dallago 2021](https://www.biorxiv.org/content/10.1101/2021.11.09.467890v2.abstract)] | ⚠️ |
+| `SCL` | residues_to_value | ProtT5 (ProtT5-XL-UniRef50) | LightAttention | [[Stärk 2021](https://doi.org/10.1093/bioadv/vbab035)] | ✅ |
 | `Bind` | residue_to_class | ProtT5 (ProtT5-XL-UniRef50) | CNN | [[Littmann 2021](https://doi.org/10.1038/s41598-021-03431-4)] | ✅ |
-| `SAV` | residue_to_class | ProtT5 (ProtT5-XL-U50) | CNN | [[Marquet 2021](https://doi.org/10.1007/s00439-021-02411-y)] | ✅ |
+| `SAV` | sequence_to_class | ProtT5 (ProtT5-XL-U50) | CNN | [[Marquet 2021](https://doi.org/10.1007/s00439-021-02411-y)] | ✅ |
 | `Secondary Structure` | residue_to_class | ProtT5 (ProtT5-XL-U50) | CNN | - | ⚠️ |
 | `Conservation` | residue_to_class | ProtT5 (ProtT5-XL-U50) | CNN | [[Marquet 2021](https://doi.org/10.1007/s00439-021-02411-y)] | ✅ |
 
