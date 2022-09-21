@@ -1,7 +1,7 @@
 sequence_file: None
 labels_file: None
-protocol: residue_to_class
-model_choice: CNN
+protocol: sequence_to_class
+model_choice: FNN
 optimizer_choice: adam
 loss_choice: cross_entropy_loss
 num_epochs: 20
