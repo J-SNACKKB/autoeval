@@ -72,8 +72,8 @@ The available input parameters are:
 | `Meltome` | sequence_to_value | - | FNN | [[Dallago 2021](https://www.biorxiv.org/content/10.1101/2021.11.09.467890v2.abstract)] | ⚠️ |
 | `SCL` | residues_to_value | ProtT5 (ProtT5-XL-UniRef50) | LightAttention | [[Stärk 2021](https://doi.org/10.1093/bioadv/vbab035)] | ✅ |
 | `Bind` | residue_to_class | ProtT5 (ProtT5-XL-UniRef50) | CNN | [[Littmann 2021](https://doi.org/10.1038/s41598-021-03431-4)] | ✅ |
-| `SAV` | sequence_to_class | ProtT5 (ProtT5-XL-U50) | CNN | [[Marquet 2021](https://doi.org/10.1007/s00439-021-02411-y)] | ✅ |
-| `Secondary Structure` | residue_to_class | ProtT5 (ProtT5-XL-U50) | CNN | - | ⚠️ |
+| `SAV` | sequence_to_class | ProtT5 (ProtT5-XL-U50) | FNN | [[Marquet 2021](https://doi.org/10.1007/s00439-021-02411-y)] | ⚠️ |
+| `Secondary Structure` | residue_to_class | ProtT5 (ProtT5-XL-U50) | CNN | - | ✅ |
 | `Conservation` | residue_to_class | ProtT5 (ProtT5-XL-U50) | CNN | [[Marquet 2021](https://doi.org/10.1007/s00439-021-02411-y)] | ✅ |
 
 Availability semaphore:
