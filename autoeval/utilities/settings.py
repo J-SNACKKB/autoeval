@@ -41,7 +41,7 @@ split_dict = {
 
 # Available protocols
 global protocols
-protocols = ['residue_to_class', 'sequence_to_class', 'sequence_to_value', 'residue_to_value']
+protocols = ['residue_to_class', 'sequence_to_class', 'sequence_to_value', 'residue_to_value', 'residues_to_class']
 
 # Path to the configurations bank
 global configs_bank

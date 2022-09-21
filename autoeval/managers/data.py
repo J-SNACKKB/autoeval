@@ -83,6 +83,23 @@ def residue_to_value_fasta(split_dir: str, destination_sequences_dir: str, desti
     """
     pass # TODO: Standardization pending in biotrainer
 
+def residues_to_class_fasta(split_dir: str, destination_sequences_dir: str):
+    """
+    Converts FLIP CSV file to biotrainet FASTA file for the residues to class protocol.
+
+    :param split_dir: path to a valid FLIP split directory
+    :param destination_sequences_dir: path to the destination FASTA file for the sequences
+    """
+    split = read_csv(split_dir)
+
+    # Create sequences.fasta
+    with open(destination_sequences_dir, 'w') as sequences_file:
+        for index, row in split.iterrows():
+            validation = 'True' if row['validation'] == True else 'False'
+
+            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'], row['set'], validation))
+            sequences_file.write('{}\n'.format(row['sequence']))
+
 def protein_to_class_fasta(split_dir: str, destination_sequences_dir: str):
     """
     Converts FLIP CSV file to biotrainer FASTA file for the protein to class protocol.
@@ -167,6 +184,10 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
         elif protocol == 'sequence_to_value':
             logger.info('Converting CSV to FASTA for sequence to value protocol.')
             protein_to_class_fasta(split_dir, destination_sequences_dir)
+            destination_labels_dir = None
+        elif protocol == 'residues_to_class':
+            logger.info('Converting CSV to FASTA for residues to class protocol.')
+            residues_to_class_fasta(split_dir, destination_sequences_dir)
             destination_labels_dir = None
         elif protocol == 'residue_to_class':
             logger.info('Converting CSV to FASTA for residue to class protocol.')
