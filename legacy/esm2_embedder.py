@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     # Save data as h5 file
     output_file = os.path.join(arguments.output_location, arguments.output_file_name)
-    output_file = os.path.join(arguments.output_location, arguments.output_file_name)
+    logger.info("Saving embeddings in the h5 file {}.".format(output_file))
     with h5py.File(output_file, "w") as output_embeddings_file:
         idx = 0
         for seq_id, values in all_data.items():
