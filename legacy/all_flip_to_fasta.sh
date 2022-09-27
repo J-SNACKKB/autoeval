@@ -29,7 +29,7 @@ python flip_csv_to_fasta.py --protocol residues_to_class --task_location ../auto
 python flip_csv_to_fasta.py --protocol residues_to_class --task_location ../autoeval/FLIP/splits/scl/splits/ --split_file human_soft.csv --output_location ./all_fasta/scl
 python flip_csv_to_fasta.py --protocol residues_to_class --task_location ../autoeval/FLIP/splits/scl/splits/ --split_file human_hard.csv --output_location ./all_fasta/scl
 python flip_csv_to_fasta.py --protocol residues_to_class --task_location ../autoeval/FLIP/splits/scl/splits/ --split_file balanced.csv --output_location ./all_fasta/scl
-python flip_csv_to_fasta.py --protocol residues_to_class --task_location ../autoeval/FLIP/splits/scl/splits/ --split_file mixed_vs_human_2.csv --output_location ./all_fasta/scl
+#python flip_csv_to_fasta.py --protocol residues_to_class --task_location ../autoeval/FLIP/splits/scl/splits/ --split_file mixed_vs_human_2.csv --output_location ./all_fasta/scl
 
 # Bind
 echo "Converting Bind..."
