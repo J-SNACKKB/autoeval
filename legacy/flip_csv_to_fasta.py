@@ -52,7 +52,7 @@ def residues_to_class_fasta(split_dir: str, destination_sequences_dir: str):
         for index, row in split.iterrows():
             validation = 'True' if row['validation'] == True else 'False'
 
-            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'], row['set'], validation))
+            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'].replace(' ', '_'), row['set'], validation))
             sequences_file.write('{}\n'.format(row['sequence']))
 
 def protein_to_class_fasta(split_dir: str, destination_sequences_dir: str):
@@ -69,7 +69,7 @@ def protein_to_class_fasta(split_dir: str, destination_sequences_dir: str):
         for index, row in split.iterrows():
             validation = 'True' if row['validation'] == True else 'False'
 
-            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'], row['set'], validation))
+            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'].replace(' ', '_'), row['set'], validation))
             sequences_file.write('{}\n'.format(row['sequence']))
 
 def protein_to_value_fasta(split_dir: str, destination_sequences_dir: str):
@@ -94,6 +94,10 @@ if __name__ == "__main__":
     parser = create_parser()
     arguments = parser.parse_args()
 
+    # Create output directory
+    if not os.path.exists(arguments.output_location):
+        os.makedirs(arguments.output_location, exist_ok=True)
+
     # Check if the split is already in FASTA format. If already in FASTA, it at least contains the sequences.fasta file
     if os.path.exists(Path(arguments.task_location) / 'sequences.fasta'):
         #logger.info('Split already in FASTA format. Conversion not needed. Copying files direclty.')
@@ -112,9 +116,9 @@ if __name__ == "__main__":
         sequences_dir = Path(arguments.output_location) / arguments.split_file.replace('.csv', '.fasta')
 
         if arguments.protocol == 'sequence_to_class':
-            protein_to_value_fasta(split_dir, sequences_dir)
-        elif arguments.protocol == 'sequence_to_value':
             protein_to_class_fasta(split_dir, sequences_dir)
+        elif arguments.protocol == 'sequence_to_value':
+            protein_to_value_fasta(split_dir, sequences_dir)
         elif arguments.protocol == 'residues_to_class':
             residues_to_class_fasta(split_dir, sequences_dir)
         elif arguments.protocol == 'residue_to_class':
