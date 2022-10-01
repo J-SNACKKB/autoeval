@@ -62,6 +62,7 @@ if __name__ == "__main__":
     logger.info("Loading data from {}.".format(arguments.data_location))
     data = get_data(arguments.data_location)
     batch_labels, batch_strs, batch_tokens = batch_converter(data)
+    batch_tokens = batch_tokens.to(device)
 
     # Embedd data
     logger.info("Embedding proteins.")
