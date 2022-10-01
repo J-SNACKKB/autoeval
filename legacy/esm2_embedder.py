@@ -15,6 +15,7 @@ import h5py
 def create_parser():
     parser = argparse.ArgumentParser(description = "Script to systematically embedd FLIP splits")
     parser.add_argument('--model_location', type=str, required=True)
+    parser.add_argument('--representation_layer', type=int, required=True)
     parser.add_argument('--data_location', type=str, required=True)
     parser.add_argument('--output_location', type=str, required=True)
     parser.add_argument('--output_file_name', type=str, required=True)
@@ -44,10 +45,16 @@ if __name__ == "__main__":
     logging.captureWarnings(True)
     logger = logging.getLogger(__name__)
 
+    # Select device
+    logger.info("Selecting device: {}.".format("cuda" if torch.cuda.is_available() else "cpu"))
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     # Load ESM-2 model
     logger.info("Loading model from {}.".format(arguments.model_location))
-    model_data = torch.load(arguments.model_location, map_location="cpu")
+    model_data = torch.load(arguments.model_location)
     model, alphabet, model_state = esm.pretrained._load_model_and_alphabet_core_v2(model_data)
+    model = model.to(device)
+
     batch_converter = alphabet.get_batch_converter()
     model.eval() # Disables dropout for deterministic results
 
@@ -58,21 +65,9 @@ if __name__ == "__main__":
 
     # Embedd data
     logger.info("Embedding proteins.")
-    # Following commented version does not work with large batch of proteins
-    #with torch.no_grad():
-    #    results = model(batch_tokens, repr_layers=[33], return_contacts=False)
-    #token_representations = results["representations"][33]
-    token_representations = []
-    idx = 0
-    for token in tqdm(batch_tokens):
-        with torch.no_grad():
-            representation = model(torch.tensor([token.numpy()]), repr_layers=[6], return_contacts=False)["representations"][6]
-            if idx == 0:
-                token_representations = np.array(representation.numpy())
-            else:
-                token_representations = np.vstack((token_representations, representation.numpy()))
-        idx += 1
-    token_representations = torch.tensor(token_representations)
+    with torch.no_grad():
+        results = model(batch_tokens, repr_layers=[arguments.representation_layer], return_contacts=False)
+    token_representations = results["representations"][arguments.representation_layer].cpu().numpy()
 
     logger.info("Proteins embedded. Formating a final dataset")
     all_data = {}
@@ -85,6 +80,10 @@ if __name__ == "__main__":
     with h5py.File(output_file, "w") as output_embeddings_file:
         idx = 0
         for seq_id, values in all_data.items():
-            output_embeddings_file.create_dataset(str(idx), data=np.array(values['embeddings']), compression="gzip", chunks=True, maxshape=(values['embeddings'].shape))
+            output_embeddings_file.create_dataset(str(idx),
+                                                data=np.array(values['embeddings'])[1:len(values['sequence']) + 1], 
+                                                compression="gzip",
+                                                chunks=True, 
+                                                maxshape=(len(values['sequence']) + 1, values['embeddings'].shape[1]))
             output_embeddings_file[str(idx)].attrs["original_id"] = seq_id
             idx += 1
