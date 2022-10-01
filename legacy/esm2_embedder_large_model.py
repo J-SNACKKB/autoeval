@@ -1,9 +1,10 @@
 import argparse
 import os
 import logging
-from tqdm import tqdm
 
 import torch
+from fairscale.nn.data_parallel import FullyShardedDataParallel as FSDP
+from fairscale.nn.wrap import enable_wrap, wrap
 import esm
 
 from Bio import SeqIO
@@ -19,6 +20,7 @@ def create_parser():
     parser.add_argument('--data_location', type=str, required=True)
     parser.add_argument('--output_location', type=str, required=True)
     parser.add_argument('--output_file_name', type=str, required=True)
+    parser.add_argument('--local_rank', type=int, required=False)
     
     return parser
 
@@ -46,18 +48,33 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
 
     # Select device
-    logger.info("Selecting device: {}.".format("GPU/CUDA" if torch.cuda.is_available() else "CPU"))
+    logger.info("Selecting device: {}.".format("cuda" if torch.cuda.is_available() else "cpu"))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # Load ESM-2 model
-    logger.info("Loading model from {}.".format(arguments.model_location))
-    model_data = torch.load(arguments.model_location)
-    model, alphabet, model_state = esm.pretrained._load_model_and_alphabet_core_v2(model_data)
-    logger.info("Transfering model to {}.".format("GPU/CUDA" if torch.cuda.is_available() else "CPU"))
-    model = model.to(device)
+    # Init the distributed world with world_size 1
+    torch.distributed.init_process_group(backend="nccl", world_size=1, rank=0)
 
-    batch_converter = alphabet.get_batch_converter()
-    model.eval() # Disables dropout for deterministic results
+    # Initialize the model with FSDP wrapper
+    logger.info("Loading model from {} with FSDP wrapper.".format(arguments.model_location))
+    fsdp_params = dict(
+        mixed_precision=True,
+        flatten_parameters=True,
+        state_dict_device=torch.device("cpu"),  # reduce GPU mem usage
+        cpu_offload=True,  # enable cpu offloading
+    )
+    with enable_wrap(wrapper_cls=FSDP, **fsdp_params):
+        model_data = torch.load(arguments.model_location)
+        model, alphabet, model_state = esm.pretrained._load_model_and_alphabet_core_v2(model_data)
+        batch_converter = alphabet.get_batch_converter()
+        model.eval() # Disables dropout for deterministic results
+
+        # Wrap each layer in FSDP separately
+        for name, child in model.named_children():
+            if name == "layers":
+                for layer_name, layer in child.named_children():
+                    wrapped_layer = wrap(layer)
+                    setattr(child, layer_name, wrapped_layer)
+        model = wrap(model)
 
     # Get and prepare data
     logger.info("Loading data from {}.".format(arguments.data_location))
