@@ -4,6 +4,8 @@ This repository contains the AutoEval module, which allows to auto evaluate FLIP
 
 Together with the scripts, this repository also contains a bank of optimal or base configurations (in the `configsbank` folder) for each of the available datasets in FLIP. These configuration files are general versions for each dataset and they are modified by the script. The expected to be usually changed parameters (embedder_name and model_choice) can be changed using input parameters. A different configuration file can be used using the input parameters, as explained below.
 
+[Here](http://data.bioembeddings.com/public/FLIP/fasta/) are available all the FLIP datasets in FASTA format for, e.g., those cases that it is needed to obtain different embeddings from the ones available in bio-embeddings, and the FASTA files are required. When different embeddings or modifications to the data are not required, AutoEval automatically converts FLIP CSV format to FASTA (or reads directly those datasets already in FASTA).
+
 ## How to run AutoEval
 
 AutoEval can be executed:
@@ -45,7 +47,7 @@ python run-autoeval.py scl_1 residues_to_class ./scl_1 --embedder prottrans_t5_x
 - via Docker:
 
 ```bash
-?
+-
 ```
 
 The available input parameters are:

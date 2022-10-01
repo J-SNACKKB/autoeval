@@ -97,7 +97,7 @@ def residues_to_class_fasta(split_dir: str, destination_sequences_dir: str):
         for index, row in split.iterrows():
             validation = 'True' if row['validation'] == True else 'False'
 
-            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'], row['set'], validation))
+            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'].replace(' ', '_'), row['set'], validation))
             sequences_file.write('{}\n'.format(row['sequence']))
 
 def protein_to_class_fasta(split_dir: str, destination_sequences_dir: str):
@@ -114,7 +114,7 @@ def protein_to_class_fasta(split_dir: str, destination_sequences_dir: str):
         for index, row in split.iterrows():
             validation = 'True' if row['validation'] == True else 'False'
 
-            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'], row['set'], validation))
+            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'].replace(' ', '_'), row['set'], validation))
             sequences_file.write('{}\n'.format(row['sequence']))
 
 def protein_to_value_fasta(split_dir: str, destination_sequences_dir: str):
@@ -179,11 +179,11 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
 
         if protocol == 'sequence_to_class':
             logger.info('Converting CSV to FASTA for sequence to class protocol.')
-            protein_to_value_fasta(split_dir, destination_sequences_dir)
+            protein_to_class_fasta(split_dir, destination_sequences_dir)
             destination_labels_dir = None
         elif protocol == 'sequence_to_value':
             logger.info('Converting CSV to FASTA for sequence to value protocol.')
-            protein_to_class_fasta(split_dir, destination_sequences_dir)
+            protein_to_value_fasta(split_dir, destination_sequences_dir)
             destination_labels_dir = None
         elif protocol == 'residues_to_class':
             logger.info('Converting CSV to FASTA for residues to class protocol.')
