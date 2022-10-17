@@ -94,8 +94,8 @@ Availability semaphore:
 |  | `sampled` | aav_7 |  |  |
 | `Meltome` | `mixed_split` | meltome_1 | `human` | meltome_2 |
 |  | `human_cell` | meltome_3 |  |  |
-| `GB1` | `one_vs_rest` | gb_1 | `two_vs_rest` | gb_2 |
-|  | `three_vs_rest` | gb_3 | `low_vs_high` | gb_4 |
+| `GB1` | `one_vs_rest` | gb1_1 | `two_vs_rest` | gb1_2 |
+|  | `three_vs_rest` | gb1_3 | `low_vs_high` | gb1_4 |
 |  | `sampled` | gb_5 |  |  |
 | `SCL` | `mixed_soft` | scl_1 | `mixed_hard` | scl_2 |
 |  | `human_soft` | scl_3 | `human_hard` | scl_4 |
