@@ -25,7 +25,7 @@ def filter_fasta_entries(fasta_entries: List[any], min_size: int, max_size: int)
 
     new_fasta_entries = []
     for entry in fasta_entries:
-        if (min_size is not None and len(entry.seq) > min_size) or (max_size is not None and len(entry.seq) < max_size):
+        if (min_size is not None and len(entry.seq) > min_size) 222 (max_size is not None and len(entry.seq) < max_size):
             new_fasta_entries.append(entry)
         else:
             logger.info('Deleted protein {}'.format(entry.id))
@@ -50,91 +50,7 @@ def equilibrate_sequences(destination_sequences_dir: str, destination_labels_dir
     sequence_ids_to_delete = sequences_ids.difference(labels_ids)
     delete_entries_FASTA(sequence_ids_to_delete, destination_sequences_dir)
 
-def residue_to_class_fasta(split_dir: str, destination_sequences_dir: str, destination_labels_dir: str):
-    """
-    Converts FLIP CSV files to biotrainer FASTA files for the residue to class protocol.
-
-    :param split_dir: path to a valid FLIP split directory
-    :param destination_sequences_dir: path to the destination FASTA file for the sequences
-    :param destination_labels_dir: path to the destination FASTA file for the labels
-    """
-    split = read_csv(split_dir)
-
-    # Create sequences.fasta
-    with open(destination_sequences_dir, 'w') as sequences_file:
-        for index, row in split.iterrows():
-            sequences_file.write('>{}\n'.format('Sequence{}'.format(index)))
-            sequences_file.write('{}\n'.format(row['sequence']))
-
-    # Create labels.fasta
-    with open(destination_labels_dir, 'w') as labels_file:
-        for index, row in split.iterrows():
-            validation = 'True' if row['validation'] == True else 'False'
-            labels_file.write('>{}\n'.format('Sequence{} SET={} VALIDATION={}'.format(index, row['set'], validation)))
-            labels_file.write('{}\n'.format(row['target']))
-
-def residue_to_value_fasta(split_dir: str, destination_sequences_dir: str, destination_labels_dir: str):
-    """
-    Converts FLIP CSV files to biotrainer FASTA files for the residue to class protocol.
-
-    :param split_dir: path to a valid FLIP split directory
-    :param destination_sequences_dir: path to the destination FASTA file for the sequences
-    :param destination_labels_dir: path to the destination FASTA file for the labels
-    """
-    pass # TODO: Standardization pending in biotrainer
-
-def residues_to_class_fasta(split_dir: str, destination_sequences_dir: str):
-    """
-    Converts FLIP CSV file to biotrainet FASTA file for the residues to class protocol.
-
-    :param split_dir: path to a valid FLIP split directory
-    :param destination_sequences_dir: path to the destination FASTA file for the sequences
-    """
-    split = read_csv(split_dir)
-
-    # Create sequences.fasta
-    with open(destination_sequences_dir, 'w') as sequences_file:
-        for index, row in split.iterrows():
-            validation = 'True' if row['validation'] == True else 'False'
-
-            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'].replace(' ', '_'), row['set'], validation))
-            sequences_file.write('{}\n'.format(row['sequence']))
-
-def protein_to_class_fasta(split_dir: str, destination_sequences_dir: str):
-    """
-    Converts FLIP CSV file to biotrainer FASTA file for the protein to class protocol.
-
-    :param split_dir: path to a valid FLIP split directory
-    :param destination_sequences_dir: path to the destination FASTA file for the sequences
-    """
-    split = read_csv(split_dir)
-
-    # Create sequences.fasta
-    with open(destination_sequences_dir, 'w') as sequences_file:
-        for index, row in split.iterrows():
-            validation = 'True' if row['validation'] == True else 'False'
-
-            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'].replace(' ', '_'), row['set'], validation))
-            sequences_file.write('{}\n'.format(row['sequence']))
-
-def protein_to_value_fasta(split_dir: str, destination_sequences_dir: str):
-    """
-    Converts FLIP CSV file to biotrainer FASTA file for the protein to value protocol.
-
-    :param split_dir: path to a valid FLIP split directory
-    :param destination_sequences_dir: path to the destination FASTA file for the sequences
-    """
-    split = read_csv(split_dir)
-
-    # Create sequences.fasta
-    with open(destination_sequences_dir, 'w') as sequences_file:
-        for index, row in split.iterrows():
-            validation = 'True' if row['validation'] == True else 'False'
-            
-            sequences_file.write('>Sequence{} TARGET={} SET={} VALIDATION={}\n'.format(index, row['target'], row['set'], validation))
-            sequences_file.write('{}\n'.format(row['sequence']))
-
-def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max_size: int, mask: bool) -> Tuple[str, str]:
+def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max_size: int, mask: str) -> Tuple[str, str]:
     """
     Copies the data files from FLIP to the working directory depending on the selected split and protocol. 
     The data files are then filtered according to the min_size and max_size parameters.
@@ -157,44 +73,31 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
         shutil.unpack_archive(splits / split_dict[split][0] / 'splits.zip', splits / split_dict[split][0] / 'splits', "zip")
         logger.info('Splits of the dataset unzipped.')
 
-    # Check if the split is already in FASTA format. If already in FASTA, it at least contains the sequences.fasta file
-    if os.path.exists(splits / split_dict[split][0] / 'splits' / 'sequences.fasta'):
-        logger.info('Split already in FASTA format. Conversion not needed. Copying files direclty.')
-        shutil.copyfile(splits / split_dict[split][0] / 'splits' / 'sequences.fasta', destination_sequences_dir)
-        
-        if protocol == 'residue_to_class':
-            shutil.copyfile(splits / split_dict[split][0] / 'splits' / (split_dict[split][1] + '.fasta'), destination_labels_dir)
+    # Check if the required FASTA files are available
+    # sequence_to_value, sequence_to_class, residues_to_class: SPLIT_NAME.fasta
+    # residue_to_class: sequences.fasta + SPLIT_NAME.fasta
+    if protocol in ('sequence_to_value', 'sequence_to_class', 'residues_to_class'):
+        if os.path.exists(splits / split_dict[split][0] / 'splits' / f'{split_dict[split][1]}.fasta'):
+             shutil.copyfile(splits / split_dict[split][0] / 'splits' / f'{split_dict[split][1]}.fasta', destination_sequences_dir)
         else:
-            destination_labels_dir = None
-
-        # Check if exists a mask file. If exists, copy it to the working directory
-        if os.path.exists(splits / split_dict[split][0] / 'splits' / 'mask.fasta') and mask:
-            shutil.copyfile(splits / split_dict[split][0] / 'splits' / 'mask.fasta', destination_masks_dir)
-
+            raise Exception(f"Required files for protocol {protocol} not available.")
+        destination_labels_dir = None
+    elif protocol in ('residue_to_class'):
+        if (not os.path.exists(splits / split_dict[split][0] / 'splits' / f'{split_dict[split][1]}.fasta') 
+            and not os.path.exists(splits / split_dict[split][0] / 'splits' / 'sequences.fasta')):
+            raise Exception(f"Required files for protocol {protocol} not available.")
+        
+        shutil.copyfile(splits / split_dict[split][0] / 'splits' / 'sequences.fasta', destination_sequences_dir)
+        shutil.copyfile(splits / split_dict[split][0] / 'splits' / (split_dict[split][1] + '.fasta'), destination_labels_dir)
     else:
-        # If the split is not already in FASTA format we convert CSV to FASTA
-        logger.info('Split in CSV format.')
+        raise Exception(f"Invalid protocol ({protocol}).")
 
-        split_dir = splits / split_dict[split][0] / 'splits' / (split_dict[split][1] + '.csv')
-
-        if protocol == 'sequence_to_class':
-            logger.info('Converting CSV to FASTA for sequence to class protocol.')
-            protein_to_class_fasta(split_dir, destination_sequences_dir)
-            destination_labels_dir = None
-        elif protocol == 'sequence_to_value':
-            logger.info('Converting CSV to FASTA for sequence to value protocol.')
-            protein_to_value_fasta(split_dir, destination_sequences_dir)
-            destination_labels_dir = None
-        elif protocol == 'residues_to_class':
-            logger.info('Converting CSV to FASTA for residues to class protocol.')
-            residues_to_class_fasta(split_dir, destination_sequences_dir)
-            destination_labels_dir = None
-        elif protocol == 'residue_to_class':
-            logger.info('Converting CSV to FASTA for residue to class protocol.')
-            residue_to_class_fasta(split_dir, destination_sequences_dir, destination_labels_dir)
-        elif protocol == 'residue_to_value':
-            logger.info('Converting CSV to FASTA for residue to value protocol.')
-            # TODO: Standardization pending in biotrainer
+    # Check whether the mask file exist and copy it, if it was requested
+    if mask:
+        if os.path.exists(splits / split_dict[split][0] / 'splits' / f'{mask}'):
+            shutil.copyfile(splits / split_dict[split][0] / 'splits' / f'{mask}', destination_masks_dir)
+        else:
+            raise Exception(f"Use of a mask has been requeste but file the file {mask} is not available.")
 
     # Data already in FASTA format. Let's filter by minsize and maxsize
     if min_size is not None or max_size is not None:
