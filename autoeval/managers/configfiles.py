@@ -53,8 +53,8 @@ def prepare_configfile(working_dir: str, config_file: str, sequences: str, label
         logger.info('Config file uses {} model. Changed to {}'.format(config["model_choice"], args.model))
         config["model_choice"] = args.model
     if args.mask:
-        logger.info('Config file does not use a mask. Changed to use {}'.format(working_dir / "mask.fasta"))
-        config["mask_file"] = "mask.fasta"
+        logger.info('Config file does not use a mask. Changed to use {}'.format(working_dir / args.mask))
+        config["mask_file"] = args.mask
 
     # Keep only embedder_name or embeddings_file
     if "embedder_name" in config and config["embedder_name"] is None:
