@@ -9,4 +9,7 @@ learning_rate: 1e-3
 batch_size: 128
 embedder_name: prottrans_t5_xl_u50
 sanity_check: false
-ignore_file_inconsistencies: true
+ignore_file_inconsistencies: True
+save_split_ids: True
+cross_validation_config:
+  method: hold_out
