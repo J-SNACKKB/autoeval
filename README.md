@@ -69,8 +69,8 @@ docker run --rm \
 | `split` | Name of the split, e.g. `aav_des_mut`. The different options are listed at the end of this file. |
 | `protocol` | Task-specific training protocol to use from [the available ones in biotrainer](https://github.com/sacdallago/biotrainer/blob/main/README.md): `residue_to_class`, `residues_to_class`, `sequence_to_class` and `sequence_to_value`. |
 | `working_dir` | Path to the working directory.|
-| `-e` / `--embedder` | Embedder to use if different from the one in the default configuration. It can be from [the ones available in bio-embeddings](https://docs.bioembeddings.com/v0.2.3/api/bio_embeddings.embed.html), e.g. `esm1b`; or a custom embedder (path must be relative to the configuration file, see details [here](https://github.com/sacdallago/biotrainer/blob/main/docs/config_file_options.md)). |
-| `-f` / `--embeddingsfile` | Path to the file containing precomputed embeddings ifavailable. |
+| `-e` / `--embedder` | Embedder to use if different from the one in the default configuration. It can be from [the ones available in bio-embeddings](https://docs.bioembeddings.com/v0.2.3/api/bio_embeddings.embed.html), e.g. `esm1b`; or a custom embedder (see details [here](https://github.com/sacdallago/biotrainer/tree/main/examples/custom_embedder)). |
+| `-f` / `--embeddingsfile` | Path to the file containing precomputed embeddings if available. |
 | `-m` / `--model` | Model to use if different fro them one in the default configuration. It should be one from [the ones available in biotrainer](https://github.com/sacdallago/biotrainer/tree/main/biotrainer/models), e.g. `FNN` or `CNN`. |
 | `-c` / `--config` | Config file different from the provided one in configsbank for the indicated `split`. |
 | `-mins` / `--minsize` | Only use proteins the given minimum length. |
