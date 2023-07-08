@@ -93,7 +93,7 @@ For every task, the original configuration is the one used by default (defined i
 | `Conservation` | residue_to_class | ProtT5 (ProtT5-XL-U50) | CNN | [[Marquet 2021](https://doi.org/10.1007/s00439-021-02411-y)] | ✅ |
 
 Availability semaphore:
-- ✅: Available in configsbank in the closest possible way to the better configuration in the reference.
+- ✅: Available in configsbank is the closest possible way to the best configuration in the reference.
 - ⚠️: The best configuration is not possible due to, e.g., a lack of features in biotrainer. The best possible alternative is the one available.
 - ❌: Not available in configsbank. Somecases can be used anyhow under user's responsability.
 
