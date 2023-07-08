@@ -25,7 +25,7 @@ def filter_fasta_entries(fasta_entries: List[any], min_size: int, max_size: int)
 
     new_fasta_entries = []
     for entry in fasta_entries:
-        if (min_size is not None and len(entry.seq) > min_size) 222 (max_size is not None and len(entry.seq) < max_size):
+        if (min_size is not None and len(entry.seq) > min_size) or (max_size is not None and len(entry.seq) < max_size):
             new_fasta_entries.append(entry)
         else:
             logger.info('Deleted protein {}'.format(entry.id))
