@@ -1,6 +1,7 @@
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
-from typing import List
+from typing import List, Set, Union
+
 
 def read_FASTA(path: str) -> List[SeqRecord]:
     """
@@ -11,6 +12,7 @@ def read_FASTA(path: str) -> List[SeqRecord]:
     """
     return list(SeqIO.parse(path, "fasta"))
 
+
 def overwrite_FASTA(sequences: List[SeqRecord], path: str):
     """
     Helper function to overwrite FASTA file.
@@ -20,7 +22,8 @@ def overwrite_FASTA(sequences: List[SeqRecord], path: str):
     """
     SeqIO.write(sequences, path, "fasta")
 
-def delete_entries_FASTA(ids: List[str], path: str):
+
+def delete_entries_FASTA(ids: Union[Set[str], List[str]], path: str):
     """
     Helper function to delete entries from FASTA file.
 
