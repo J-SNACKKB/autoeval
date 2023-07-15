@@ -2,6 +2,7 @@ import os
 import logging
 import shutil
 
+from pathlib import Path
 from typing import List, Tuple
 
 from ..utilities.settings import splits, split_dict
@@ -32,7 +33,7 @@ def filter_fasta_entries(fasta_entries: List[any], min_size: int, max_size: int)
     return new_fasta_entries, ids_deleted_proteins
 
 
-def equilibrate_sequences(destination_sequences_dir: str, destination_labels_dir: str) -> Tuple[str, str]:
+def equilibrate_sequences(destination_sequences_dir: str, destination_labels_dir: str):
     """
     Filters sequences.fasta keeping only IDs in labels.fasta
 
@@ -50,7 +51,7 @@ def equilibrate_sequences(destination_sequences_dir: str, destination_labels_dir
     delete_entries_FASTA(sequence_ids_to_delete, destination_sequences_dir)
 
 
-def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max_size: int, mask: str) -> \
+def prepare_data(split: str, protocol: str, working_dir: Path, min_size: int, max_size: int, mask: str) -> \
         Tuple[str, str]:
     """
     Copies the data files from FLIP to the working directory depending on the selected split and protocol. 
@@ -64,9 +65,9 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
     :param mask: whether to mask the sequences or not.
     :return: path to the sequences.fasta file and path to the labels.fasta file.
     """
-    destination_sequences_dir = working_dir / 'sequences.fasta'
-    destination_labels_dir = working_dir / 'labels.fasta'
-    destination_masks_dir = working_dir / 'mask.fasta'
+    destination_sequences_dir = str(working_dir / 'sequences.fasta')
+    destination_labels_dir = str(working_dir / 'labels.fasta')
+    destination_masks_dir = str(working_dir / 'mask.fasta')
 
     # Check if the splits of the dataset are unzipped. If not, unzip them
     if not os.path.isdir(splits / split_dict[split][0] / 'splits'):
