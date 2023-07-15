@@ -1,10 +1,8 @@
 import os
 import logging
+import shutil
 
 from typing import List, Tuple
-
-import shutil
-from pandas import read_csv
 
 from ..utilities.settings import splits, split_dict
 from ..utilities.FASTA import read_FASTA, overwrite_FASTA, delete_entries_FASTA
@@ -33,6 +31,7 @@ def filter_fasta_entries(fasta_entries: List[any], min_size: int, max_size: int)
 
     return new_fasta_entries, ids_deleted_proteins
 
+
 def equilibrate_sequences(destination_sequences_dir: str, destination_labels_dir: str) -> Tuple[str, str]:
     """
     Filters sequences.fasta keeping only IDs in labels.fasta
@@ -50,7 +49,9 @@ def equilibrate_sequences(destination_sequences_dir: str, destination_labels_dir
     sequence_ids_to_delete = sequences_ids.difference(labels_ids)
     delete_entries_FASTA(sequence_ids_to_delete, destination_sequences_dir)
 
-def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max_size: int, mask: str) -> Tuple[str, str]:
+
+def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max_size: int, mask: str) -> \
+        Tuple[str, str]:
     """
     Copies the data files from FLIP to the working directory depending on the selected split and protocol. 
     The data files are then filtered according to the min_size and max_size parameters.
@@ -70,7 +71,8 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
     # Check if the splits of the dataset are unzipped. If not, unzip them
     if not os.path.isdir(splits / split_dict[split][0] / 'splits'):
         logger.info('Splits of the dataset are not unzipped. Unzipping them.')
-        shutil.unpack_archive(splits / split_dict[split][0] / 'splits.zip', splits / split_dict[split][0] / 'splits', "zip")
+        shutil.unpack_archive(splits / split_dict[split][0] / 'splits.zip', splits / split_dict[split][0] / 'splits',
+                              "zip")
         logger.info('Splits of the dataset unzipped.')
 
     # Check if the required FASTA files are available
@@ -78,17 +80,19 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
     # residue_to_class: sequences.fasta + SPLIT_NAME.fasta
     if protocol in ('sequence_to_value', 'sequence_to_class', 'residues_to_class'):
         if os.path.exists(splits / split_dict[split][0] / 'splits' / f'{split_dict[split][1]}.fasta'):
-             shutil.copyfile(splits / split_dict[split][0] / 'splits' / f'{split_dict[split][1]}.fasta', destination_sequences_dir)
+            shutil.copyfile(splits / split_dict[split][0] / 'splits' / f'{split_dict[split][1]}.fasta',
+                            destination_sequences_dir)
         else:
             raise Exception(f"Required files for protocol {protocol} not available.")
         destination_labels_dir = None
-    elif protocol in ('residue_to_class'):
-        if (not os.path.exists(splits / split_dict[split][0] / 'splits' / f'{split_dict[split][1]}.fasta') 
-            and not os.path.exists(splits / split_dict[split][0] / 'splits' / 'sequences.fasta')):
+    elif protocol in 'residue_to_class':
+        if (not os.path.exists(splits / split_dict[split][0] / 'splits' / f'{split_dict[split][1]}.fasta')
+                and not os.path.exists(splits / split_dict[split][0] / 'splits' / 'sequences.fasta')):
             raise Exception(f"Required files for protocol {protocol} not available.")
-        
+
         shutil.copyfile(splits / split_dict[split][0] / 'splits' / 'sequences.fasta', destination_sequences_dir)
-        shutil.copyfile(splits / split_dict[split][0] / 'splits' / (split_dict[split][1] + '.fasta'), destination_labels_dir)
+        shutil.copyfile(splits / split_dict[split][0] / 'splits' / (split_dict[split][1] + '.fasta'),
+                        destination_labels_dir)
     else:
         raise Exception(f"Invalid protocol ({protocol}).")
 
@@ -97,7 +101,7 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
         if os.path.exists(splits / split_dict[split][0] / 'splits' / f'{mask}'):
             shutil.copyfile(splits / split_dict[split][0] / 'splits' / f'{mask}', destination_masks_dir)
         else:
-            raise Exception(f"Use of a mask has been requeste but file the file {mask} is not available.")
+            raise Exception(f"Use of a mask has been requested but file {mask} is not available.")
 
     # Data already in FASTA format. Let's filter by minsize and maxsize
     if min_size is not None or max_size is not None:
@@ -109,20 +113,20 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
         new_fasta_entries, ids_deleted_proteins = filter_fasta_entries(fasta_sequences_entries, min_size, max_size)
         overwrite_FASTA(new_fasta_entries, destination_sequences_dir)
 
-        # Flilter labels.fasta if exists
-        if (destination_labels_dir is not None):
+        # Filter labels.fasta if exists
+        if destination_labels_dir is not None:
             logger.info("Filtering proteins from labels.fasta.")
             fasta_sequences_entries = read_FASTA(destination_labels_dir)
             delete_entries_FASTA(ids_deleted_proteins, destination_labels_dir)
 
         logger.info('Proteins filtered.')
 
-    # Splits with labels.fasta have a sequences.fasta with all the sequences in the datasets. Those not in labes.fasta must be removed from sequences.fasta.
-    if (destination_labels_dir is not None):
-        logger.info('Equilibrating sequences.fasta according to labels.fasta as needed for biotrainer protocols with labels.fasta as input.')
+    # Splits with labels.fasta have a sequences.fasta with all the sequences in the datasets.
+    # Those not in labels.fasta must be removed from sequences.fasta.
+    if destination_labels_dir is not None:
+        logger.info(
+            'Equilibrating sequences.fasta according to labels.fasta as needed for biotrainer protocols with '
+            'labels.fasta as input.')
         equilibrate_sequences(destination_sequences_dir, destination_labels_dir)
 
     return destination_sequences_dir, destination_labels_dir
-
-
-
