@@ -116,7 +116,7 @@ def prepare_data(split: str, protocol: str, working_dir: str, min_size: int, max
         # Filter labels.fasta if exists
         if destination_labels_dir is not None:
             logger.info("Filtering proteins from labels.fasta.")
-            fasta_sequences_entries = read_FASTA(destination_labels_dir)
+            # fasta_sequences_entries = read_FASTA(destination_labels_dir)
             delete_entries_FASTA(ids_deleted_proteins, destination_labels_dir)
 
         logger.info('Proteins filtered.')
