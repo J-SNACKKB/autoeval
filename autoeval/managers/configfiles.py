@@ -24,30 +24,43 @@ def prepare_configfile(working_dir: str, config_file: str, sequences: str, label
     shutil.copyfile(config_file, working_dir / 'config.yml')
     logger.info('Configuration file copied from {} to the working directory.'.format(config_file))
 
-    # Modify copy of the config file with correct data of the selected split and the selected embedding
+    # Modify copy of the config file with correct data of the selected split and configuration
     with open(working_dir / 'config.yml', 'r') as cfile:
         config = yaml.load(cfile, Loader=yaml.FullLoader)
 
-    for item in config:
-        if item == "sequence_file":
-            logger.info('Modifying config file with sequence file: {}'.format(sequences))
-            config["sequence_file"] = str(sequences).split('/')[-1]
-        elif item == "labels_file" and labels is not None:
-            logger.info('Modifying config file with labels file: {}'.format(labels))
-            config["labels_file"] = str(labels).split('/')[-1]
-        elif item == "embedder_name" and args.embedder is not None:
-            logger.info('Config file uses {} embedder. Changed by {}'.format(config["embedder_name"], args.embedder))
-            config["embedder_name"] = args.embedder
-        elif item == "embeddings_file" and args.embeddingsfile is not None:
-            logger.info('Config file uses {} embeddings file. Changed by {}'.format(config["embeddings_file"], args.embeddingsfile))
-            config["embeddings_file"] = args.embeddingsfile
-        elif item == "model_choice" and args.model is not None:
-            logger.info('Config file uses {} model. Changed by {}'.format(config["model_choice"], args.model))
-            config["model_choice"] = args.model
-    
+    # Check mutually exclusion between embedder_name and embedder_file arguments
+    if args.embedder and args.embeddingsfile:
+        raise Exception("embedder_name and embedder_file are mutually exclusive. Provide just one as input argument.")
+    if "embedder_name" in config and "embeddings_file" in config:
+        raise Exception("embedder_name and embedder_file are mutually exclusive. Provide just one in the configuration file.")
+
+    # Modify configuration file
+    if config["sequence_file"] == "None":
+        logger.info('Modifying config file with sequence file: {}'.format(sequences))
+        config["sequence_file"] = str(sequences).split('/')[-1]
+    if labels is not None and config["labels_file"] == "None":
+        logger.info('Modifying config file with labels file: {}'.format(labels))
+        config["labels_file"] = str(labels).split('/')[-1]
+    if args.embedder is not None:
+        logger.info('Embedder changed to {}'.format(args.embedder))
+        config["embedder_name"] = args.embedder
+        config["embeddings_file"] = None
+    if args.embeddingsfile is not None:
+        logger.info('Embeddings file changed to {}'.format(args.embeddingsfile))
+        config["embeddings_file"] = args.embeddingsfile
+        config["embedder_name"] = None
+    if args.model is not None:
+        logger.info('Config file uses {} model. Changed to {}'.format(config["model_choice"], args.model))
+        config["model_choice"] = args.model
     if args.mask:
-        logger.info('Config file does not use a mask. Changed to use {}'.format(working_dir / "mask.fasta"))
-        config["mask_file"] = "mask.fasta"
+        logger.info('Config file does not use a mask. Changed to use {}'.format(working_dir / args.mask))
+        config["mask_file"] = args.mask
+
+    # Keep only embedder_name or embeddings_file
+    if "embedder_name" in config and config["embedder_name"] is None:
+        del config["embedder_name"]
+    if "embeddings_file" in config and config["embeddings_file"] is None:
+        del config["embeddings_file"]
 
     with open(working_dir / 'config.yml', 'w') as cfile:
         yaml.dump(config, cfile)

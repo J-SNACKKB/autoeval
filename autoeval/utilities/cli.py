@@ -22,7 +22,7 @@ def create_parser():
     - -f or --embeddingsfile: the path to the file containing the embeddings.
         Allows to use precomputed embeddings.
 
-    - -mask or --mask: if set, use the masks in the file mask.fasta from the working directory to filter the residues
+    - -mask or --mask: if set, use the masks in the file mask.fast or the provided one to filter the residues
     
     - -m or --model: the name of the model to use (from the available ones in biotrainer).
         Allows to change the specified one in the config file.
@@ -41,7 +41,7 @@ def create_parser():
     parser.add_argument("working_dir", type=str, help="The path to the folder to save the needed files and results.")
     parser.add_argument("-e", "--embedder", type=str, help="The embedder to use.")
     parser.add_argument("-f", "--embeddingsfile", type=str, help="The path to the file containing the embeddings.")
-    parser.add_argument("-mask", "--mask", action='store_true', help="If set, use the masks in the file mask.fasta from the working directory to filter the residues")
+    parser.add_argument("-mask", "--mask", type=str, nargs='?', const='mask.fasta', help="If set, use the masks in the file mask.fasta from the working directory to filter the residues")
     parser.add_argument("-m", "--model", type=str, help="The model to use.")
     parser.add_argument("-c", "--config", help="Config file different from the provided one in configsbank.", type=str, default=None)
     parser.add_argument("-mins", "--minsize", help="Use proteins with more than minsize residues.", type=int, default=None)

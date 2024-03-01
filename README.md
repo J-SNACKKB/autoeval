@@ -1,71 +1,85 @@
 # AutoEval
 
-This repository contains the AutoEval module, which allows to auto evaluate FLIP datasets using [bio-trainer](https://github.com/sacdallago/biotrainer) to train the models and [bio-embeddings](https://github.com/sacdallago/bio_embeddings) to embed the proteins.
+This repository contains AutoEval, a module for a fast and easy evaluation of FLIP benchmarking tasks. It uses [biotrainer](https://github.com/sacdallago/biotrainer) to train the task-specific models and [bio-embeddings](https://github.com/sacdallago/bio_embeddings) or custom embedders to embed proteins.
 
-Together with the scripts, this repository also contains a bank of optimal or base configurations (in the `configsbank` folder) for each of the available datasets in FLIP. These configuration files are general versions for each dataset and they are modified by the script. The expected to be usually changed parameters (embedder_name and model_choice) can be changed using input parameters. A different configuration file can be used using the input parameters, as explained below.
+Its way of working is as simple as
 
-[Here](http://data.bioembeddings.com/public/FLIP/fasta/) are available all the FLIP datasets in FASTA format for, e.g., those cases that it is needed to obtain different embeddings from the ones available in bio-embeddings, and the FASTA files are required. When different embeddings or modifications to the data are not required, AutoEval automatically converts FLIP CSV format to FASTA (or reads directly those datasets already in FASTA).
-
-## How to run AutoEval
-
-AutoEval can be executed:
-
-- via Poetry:
 ```bash
-# Make sure you have poetry installed
-curl -sSL https://install.python-poetry.org/ | python3 - --version 1.1.13
+python run-autoeval.py scl_mixed_soft residues_to_class ./results --embedder prottrans_t5_xl_u50
+```
 
-# Install dependencies and AutoEval via poetry
+where
+
+- `scl_mixed_soft` indicates the task and the split to be evaluated,
+- `residues_to_class` the protocol used for the tasks,
+- `./results` the output directory,
+- and `--embedder prottrans_t5_xl_u50` the embedder from [bio-embeddings](https://github.com/sacdallago/bio_embeddings) to be used
+
+The different options are summarized below.
+
+## Installation and running
+
+1. Make sure you have [poetry](https://python-poetry.org/) installed: 
+```bash
+curl -sSL https://install.python-poetry.org/ | python3 - --version 1.4.2
+```
+
+2. Install dependencies and biotrainer via `poetry`:
+```bash
+# In the base directory:
 poetry install
+# Optional: Add bio-embeddings to compute embeddings
+poetry install --extras "bio-embeddings"
+# You can also install all extras at once
+poetry install --all-extras
+```
 
+To run AutoEval:
+
+- with Poetry:
+```bash
+# Option 1:
+poetry run autoeval DATASET_SPLIT PROTOCOL WORKING_DIR [...]
+
+# Option 2:
+autoeval DATASET_SPLIT PROTOCOL WORKING_DIR [...]
+```
+
+The provieded `run-autoeval.py` can also be used.
+
+- with Docker:
+
+```bash
+# Build
+docker build -t autoeval .
 # Run
-poetry run python3 run-autoeval.py split_abbreviation protocol /path/to/working_directory [--embedder embedder_name] [--embeddingsfile embeddings_path] \
-    [--model model_name] [--config config_name] \
-    [--minsize min_size] [--maxsize max_size]
-    [--mask]
+docker run --rm \
+    -v "$(pwd)/examples/docker":/mnt \
+    -v bio_embeddings_weights_cache:/root/.cache/bio_embeddings \
+    -u $(id -u ${USER}):$(id -g ${USER}) \
+    biotrainer:latest /mnt/config.yml
 ```
 
-Example:
-```bash
-poetry run python3 run-autoeval.py scl_1 residues_to_class ./scl_1 --embedder prottrans_t5_xl_u50
-```
 
-- via Command Line:
+## Options
 
-```bash
-python run-autoeval.py split_abbreviation protocol /path/to/working_directory [--embedder embedder_name] [--embeddingsfile embeddings_path] \
-    [--model model_name] [--config config_name] \
-    [--minsize min_size] [--maxsize max_size]
-    [--mask]
-```
-
-Example:
-```bash
-python run-autoeval.py scl_1 residues_to_class ./scl_1 --embedder prottrans_t5_xl_u50
-```
-
-- via Docker:
-
-```bash
--
-```
-
-The available input parameters are:
 
 | Parameter | Usage |
 | --- | --- |
-| `split` | Name of the split. It should be indicated using the abbreviations in the table below. |
-| `protocol` | Protocol to use from [the available ones in bio-trainer](https://github.com/sacdallago/biotrainer/blob/main/README.md). |
-| `working_dir` | Path to the folder to save the required files and results. |
-| `-e` / `--embedder` | To indicate the embedder to use if different from the one in the config file. It should be one from [the ones available in bio-embeddings](https://docs.bioembeddings.com/v0.2.3/api/bio_embeddings.embed.html). |
-| `-f` / `--embeddingsfile` | To indicate the path to the file containing precomputed embeddings. |
-| `-m` / `--model` | To indicate the model to use if different fro the one in the config file. It houls be one form [the ones available in bio-trainer](https://github.com/sacdallago/biotrainer/tree/main/biotrainer/models) |
+| `split` | Name of the split, e.g. `aav_des_mut`. The different options are listed at the end of this file. |
+| `protocol` | Task-specific training protocol to use from [the available ones in biotrainer](https://github.com/sacdallago/biotrainer/blob/main/README.md): `residue_to_class`, `residues_to_class`, `sequence_to_class` and `sequence_to_value`. |
+| `working_dir` | Path to the working directory.|
+| `-e` / `--embedder` | Embedder to use if different from the one in the default configuration. It can be from [the ones available in bio-embeddings](https://docs.bioembeddings.com/v0.2.3/api/bio_embeddings.embed.html), e.g. `esm1b`; or a custom embedder (see details [here](https://github.com/sacdallago/biotrainer/tree/main/examples/custom_embedder)). |
+| `-f` / `--embeddingsfile` | Path to the file containing precomputed embeddings if available. |
+| `-m` / `--model` | Model to use if different fro them one in the default configuration. It should be one from [the ones available in biotrainer](https://github.com/sacdallago/biotrainer/tree/main/biotrainer/models), e.g. `FNN` or `CNN`. |
 | `-c` / `--config` | Config file different from the provided one in configsbank for the indicated `split`. |
-| `-mins` / `--minsize` | Use proteins with more than minsize residues. |
-| `-maxs` / `--maxsize` | Use proteins with less than maxsize residues. |
-| `-mask` / `--mask` | If set, use the masks in the file mask.fasta from the working directory to filter the residues. |
+| `-mins` / `--minsize` | Only use proteins the given minimum length. |
+| `-maxs` / `--maxsize` | Only use proteins the given maximum length. |
+| `-mask` / `--mask` | If set, use the masks in the file `mask.fasta` from the split to filter the residues. It also accepts a path to a different masks file. |
 
-## Recommended configurations per dataset
+## Default configurations
+
+For every task, the original configuration is the one used by default (defined in the `configsbank` folder). A different configuration can be used by changing the input arguments of AutoEval or by copying and changing the given one. The default can be overwritten using `--config NEW_CONFIG.yml`.
 
 | Dataset | Type of task | Recommended pLM Embeddings | Recommended model | Reference | Available in Configsbank |
 | --- | :---: | :---: | :---: | :---: | :---: |
@@ -79,31 +93,22 @@ The available input parameters are:
 | `Conservation` | residue_to_class | ProtT5 (ProtT5-XL-U50) | CNN | [[Marquet 2021](https://doi.org/10.1007/s00439-021-02411-y)] | ✅ |
 
 Availability semaphore:
-- ✅: Available in configsbank in the closest possible way to the better configuration in the reference.
-- ⚠️: The best configuration is not possible due to, e.g., a lack of features (temporarily) in biotrainer. The best possible alternative is the one available.
+- ✅: Available in configsbank is the closest possible way to the best configuration in the reference.
+- ⚠️: The best configuration is not possible due to, e.g., a lack of features in biotrainer. The best possible alternative is the one available.
 - ❌: Not available in configsbank. Somecases can be used anyhow under user's responsability.
 
 
 ## Available splits
 
-| Dataset | Split | Abbreviation | Split | Abbreviation | 
-| --- | --- | --- | --- | --- |
-| `AAV` | `des_mut` | aav_1 | `mut_des` | aav_2 |
-|  | `one_vs_many` | aav_3 | `two_vs_many` | aav_4 |
-|  | `seven_vs_many` | aav_5 | `low_vs_high` | aav_6 |
-|  | `sampled` | aav_7 |  |  |
-| `Meltome` | `mixed_split` | meltome_1 | `human` | meltome_2 |
-|  | `human_cell` | meltome_3 |  |  |
-| `GB1` | `one_vs_rest` | gb1_1 | `two_vs_rest` | gb1_2 |
-|  | `three_vs_rest` | gb1_3 | `low_vs_high` | gb1_4 |
-|  | `sampled` | gb_5 |  |  |
-| `SCL` | `mixed_soft` | scl_1 | `mixed_hard` | scl_2 |
-|  | `human_soft` | scl_3 | `human_hard` | scl_4 |
-|  | `balanced` | scl_5 | `mixed_vs_human_2` | scl_6 |
-| `Bind` | `one_vs_many` | bind_1 | `two_vs_many` | bind_2 |
-|  | `from_publication` | bind_3 | `one_vs_sm` | bind_4 |
-|  | `one_vs_mn` | bind_5 | `one_vs_sn` | bind_6 |
-| `SAV` | `mixed` | sav_1 | `human` | sav_2 |
-|  | `only_savs` | sav_3 |  |  |
-| `Secondary Structure` | `sampled` | secondary_structure |  |  |
-| `Conservation` | `sampled` | conservation |  |  |
+In order to reference the split to be evaluated the pattern `dataset_split` must be followed. For example, the split `seven_vs_many` from the dataset `aav` must be referenced as `aav_seven_vs_many`.
+
+| Dataset | Splits |
+| --- | --- |
+| `AAV` (`aav_*`) | `des_mut`, `mut_des`, `one_vs_many`, `two_vs_many`, `seven_vs_many`, `low_vs_high`, `sampled`   |
+| `Meltome` (`meltome_*`) | `mixed_split`, `human`, `human_cell` |
+| `GB1` (`gb1_*`) | `one_vs_rest`, `two_vs_rest`, `three_vs_rest`, `low_vs_high`, `sampled` |
+| `SCL` (`scl_*`) | `mixed_soft`, `mixed_hard`, `human_soft`, `human_hard`, `balanced`, `mixed_vs_human_2` |
+| `Bind` (`bind_*`) | `one_vs_many`, `two_vs_many`, `from_publication`,  `one_vs_sm`, `one_vs_mn`, `one_vs_sn` |
+| `SAV` (`sav_*`) | `mixed`, `human`, `only_savs` |
+| `Secondary Structure` (`secondary_structure_*`) | `sampled` |
+| `Conservation` (`conservation_*`) | `sampled` |
