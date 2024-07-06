@@ -3,7 +3,7 @@ name = "autoeval"
 version = "0.1.0"
 description = "AutoEval for FLIP Benchmark"
 authors = [
-    "Joaquin Gomez Sanchez <joaquin.gomez@tum.de>"
+    "Joaquin Gomez Sanchez <joaquin.gomez@tum.de>",
     "Christian Dallago <christian.dallago@tum.de>"
 ]
 license = "AFL v3.0"

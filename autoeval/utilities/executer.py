@@ -28,7 +28,8 @@ def execute(args: Dict[str, any]):
     logger.info('The selected configuration file to load is in {}.'.format(config_file))
 
     # Create and set path to the folder to place the needed files and results (working directory)
-    working_dir = Path(args.working_dir).resolve()
+    working_dir = Path(f"{args.working_dir}/{args.split}/").resolve()
+    print(f"WORKING DIR: {working_dir}")
     if not os.path.isdir(working_dir):
         os.makedirs(working_dir)
     logger.info('Needed files and results will be saved in {}.'.format(working_dir))

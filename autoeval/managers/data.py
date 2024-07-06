@@ -72,7 +72,7 @@ def prepare_data(split: str, protocol: str, working_dir: Path, min_size: int, ma
     # Check if the splits of the dataset are unzipped. If not, unzip them
     if not os.path.isdir(splits / split_dict[split][0] / 'splits'):
         logger.info('Splits of the dataset are not unzipped. Unzipping them.')
-        shutil.unpack_archive(splits / split_dict[split][0] / 'splits.zip', splits / split_dict[split][0] / 'splits',
+        shutil.unpack_archive(splits / split_dict[split][0] / 'splits.zip', splits / split_dict[split][0],
                               "zip")
         logger.info('Splits of the dataset unzipped.')
 

@@ -5,7 +5,7 @@ This repository contains AutoEval, a module for a fast and easy evaluation of FL
 Its way of working is as simple as
 
 ```bash
-python run-autoeval.py scl_mixed_soft residues_to_class ./results --embedder prottrans_t5_xl_u50
+python run-autoeval.py scl_mixed_soft residues_to_class ./results --embedder Rostlab/prot_t5_xl_uniref50
 ```
 
 where
@@ -13,7 +13,7 @@ where
 - `scl_mixed_soft` indicates the task and the split to be evaluated,
 - `residues_to_class` the protocol used for the tasks,
 - `./results` the output directory,
-- and `--embedder prottrans_t5_xl_u50` the embedder from [bio-embeddings](https://github.com/sacdallago/bio_embeddings) to be used
+- and `--embedder Rostlab/prot_t5_xl_uniref50` the embedder from [bio-embeddings](https://github.com/sacdallago/bio_embeddings) to be used
 
 The different options are summarized below.
 
