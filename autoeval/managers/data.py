@@ -11,7 +11,7 @@ from ..utilities.FASTA import read_FASTA, overwrite_FASTA, delete_entries_FASTA
 logger = logging.getLogger(__name__)
 
 
-def filter_fasta_entries(fasta_entries: List[any], min_size: int, max_size: int) -> Tuple[List[any], List[any]]:
+def filter_fasta_enties_size(fasta_entries: List[any], min_size: int, max_size: int) -> Tuple[List[any], List[any]]:
     """
     Filters FASTA entries of the dataset depending on the minimum and maximum size.
 
@@ -32,6 +32,24 @@ def filter_fasta_entries(fasta_entries: List[any], min_size: int, max_size: int)
 
     return new_fasta_entries, ids_deleted_proteins
 
+def filter_fasta_invalid_entries(fasta_entries: List[any]) -> Tuple[List[any], List[any]]:
+    """
+    Filters FASTA entries of the dataset if SET=nan.
+
+    :param fasta_entries: a list of FASTA entries
+    :return: a tuple of two lists: filtered FASTA entries and filtered FASTA entry ids
+    """
+    ids_deleted_entries = []
+    
+    new_fasta_entries = []
+    for entry in fasta_entries:
+        if "SET=nan" in entry.description:
+            logger.info('Deleted entry with protein {}'.format(entry.id))
+            ids_deleted_entries.append(entry.id)
+        else:
+            new_fasta_entries.append(entry)
+            
+    return new_fasta_entries, ids_deleted_entries
 
 def equilibrate_sequences(destination_sequences_dir: str, destination_labels_dir: str):
     """
@@ -49,7 +67,6 @@ def equilibrate_sequences(destination_sequences_dir: str, destination_labels_dir
 
     sequence_ids_to_delete = sequences_ids.difference(labels_ids)
     delete_entries_FASTA(sequence_ids_to_delete, destination_sequences_dir)
-
 
 def prepare_data(split: str, protocol: str, working_dir: Path, min_size: int, max_size: int, mask: str) -> \
         Tuple[str, str]:
@@ -111,7 +128,7 @@ def prepare_data(split: str, protocol: str, working_dir: Path, min_size: int, ma
         # Filter sequence.fasta
         logger.info("Filtering proteins from sequences.fasta.")
         fasta_sequences_entries = read_FASTA(destination_sequences_dir)
-        new_fasta_entries, ids_deleted_proteins = filter_fasta_entries(fasta_sequences_entries, min_size, max_size)
+        new_fasta_entries, ids_deleted_proteins = filter_fasta_enties_size(fasta_sequences_entries, min_size, max_size)
         overwrite_FASTA(new_fasta_entries, destination_sequences_dir)
 
         # Filter labels.fasta if exists
@@ -129,5 +146,14 @@ def prepare_data(split: str, protocol: str, working_dir: Path, min_size: int, ma
             'Equilibrating sequences.fasta according to labels.fasta as needed for biotrainer protocols with '
             'labels.fasta as input.')
         equilibrate_sequences(destination_sequences_dir, destination_labels_dir)
+
+    # Some dataset include invalid entrie (set=nan) that must be deleted
+    logger.info("Filtering invalid FASTA entries.")
+    fasta_sequences_entries = read_FASTA(destination_sequences_dir)
+    new_fasta_entries, ids_deleted_proteins = filter_fasta_invalid_entries(fasta_sequences_entries)
+    overwrite_FASTA(new_fasta_entries, destination_sequences_dir)
+    if destination_labels_dir is not None:
+        delete_entries_FASTA(ids_deleted_proteins, destination_labels_dir)
+    logger.info('Invalid FASTA entries filtered.')
 
     return destination_sequences_dir, destination_labels_dir
