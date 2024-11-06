@@ -28,11 +28,9 @@ issues = "https://github.com/J-SNACKKB/autoeval/issues"
 repository = "https://github.com/J-SNACKKB/autoeval"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.11"
+python = ">=3.10,<3.12"
 
-pandas = "^2.0.0"
-
-biotrainer = { path = "./autoeval/biotrainer", develop = false, extras = ["bio-embeddings"] }
+biotrainer = { git = "https://github.com/sacdallago/biotrainer.git", branch = "develop"}
 
 [tool.poetry.dev-dependencies]
 pytest = "7.1.2"

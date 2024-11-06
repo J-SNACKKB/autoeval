@@ -1,6 +1,3 @@
 [submodule "FLIP"]
 	path = autoeval/FLIP
 	url = https://github.com/J-SNACKKB/FLIP.git
-[submodule "biotrainer"]
-	path = autoeval/biotrainer
-	url = https://github.com/sacdallago/biotrainer.git
