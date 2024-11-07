@@ -69,14 +69,14 @@ FLIP_DATASETS = {
     },
     "secondary_structure": {
         "splits": [
-
+            "sampled"
         ]
         ,
         "protocol": Protocol.residue_to_class
     },
     "conservation": {
         "splits": [
-
+            "sampled"
         ]
         ,
         "protocol": Protocol.residue_to_class
