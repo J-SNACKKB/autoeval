@@ -12,16 +12,29 @@ FLIP_DATASETS = {
             "sampled"
         ]
         ,
+        "recommended_evaluation_metric": "spearmans-corr-coeff",
         "protocol": Protocol.sequence_to_value
     },
-    "meltome": {
+    "bind": {
         "splits": [
-            "mixed_split",
-            "human",
-            "human_cell"
+            "one_vs_many",
+            "two_vs_many",
+            "from_publication",
+            "one_vs_sm",
+            "one_vs_mn",
+            "one_vs_sn"
         ]
         ,
-        "protocol": Protocol.sequence_to_value
+        "recommended_evaluation_metric": "f1_score",
+        "protocol": Protocol.residue_to_class
+    },
+    "conservation": {
+        "splits": [
+            "sampled"
+        ]
+        ,
+        "recommended_evaluation_metric": "accuracy",
+        "protocol": Protocol.residue_to_class
     },
     "gb1": {
         "splits": [
@@ -32,6 +45,17 @@ FLIP_DATASETS = {
             "sampled"
         ]
         ,
+        "recommended_evaluation_metric": "spearmans-corr-coeff",
+        "protocol": Protocol.sequence_to_value
+    },
+    "meltome": {
+        "splits": [
+            "mixed_split",
+            "human",
+            "human_cell"
+        ]
+        ,
+        "recommended_evaluation_metric": "spearmans-corr-coeff",
         "protocol": Protocol.sequence_to_value
     },
     "scl": {
@@ -44,19 +68,8 @@ FLIP_DATASETS = {
             "mixed_vs_human_2"
         ]
         ,
+        "recommended_evaluation_metric": "accuracy",
         "protocol": Protocol.residues_to_class
-    },
-    "bind": {
-        "splits": [
-            "one_vs_many",
-            "two_vs_many",
-            "from_publication",
-            "one_vs_sm",
-            "one_vs_mn",
-            "one_vs_sn"
-        ]
-        ,
-        "protocol": Protocol.residue_to_class
     },
     "sav": {
         "splits": [
@@ -65,6 +78,7 @@ FLIP_DATASETS = {
             "only_savs"
         ]
         ,
+        "recommended_evaluation_metric": "f1_score",
         "protocol": Protocol.sequence_to_class
     },
     "secondary_structure": {
@@ -72,13 +86,7 @@ FLIP_DATASETS = {
             "sampled"
         ]
         ,
+        "recommended_evaluation_metric": "accuracy",
         "protocol": Protocol.residue_to_class
     },
-    "conservation": {
-        "splits": [
-            "sampled"
-        ]
-        ,
-        "protocol": Protocol.residue_to_class
-    }
 }
