@@ -29,6 +29,7 @@ repository = "https://github.com/J-SNACKKB/autoeval"
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
+biopython = ">=1.83,<2.0"
 
 biotrainer = { git = "https://github.com/sacdallago/biotrainer.git", branch = "develop", optional=true}
 
