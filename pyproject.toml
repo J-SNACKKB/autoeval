@@ -28,12 +28,15 @@ issues = "https://github.com/J-SNACKKB/autoeval/issues"
 repository = "https://github.com/J-SNACKKB/autoeval"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
+python = ">=3.11,<3.12"
 
-biotrainer = { git = "https://github.com/sacdallago/biotrainer.git", branch = "develop"}
+biotrainer = { git = "https://github.com/sacdallago/biotrainer.git", branch = "develop", optional=true}
 
 [tool.poetry.dev-dependencies]
 pytest = "7.1.2"
+
+[tool.poetry.extras]
+biotrainer = ["biotrainer"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

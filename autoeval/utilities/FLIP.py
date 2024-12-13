@@ -1,5 +1,3 @@
-from biotrainer.protocols import Protocol
-
 FLIP_DATASETS = {
     "aav": {
         "splits": [
@@ -13,7 +11,7 @@ FLIP_DATASETS = {
         ]
         ,
         "recommended_evaluation_metric": "spearmans-corr-coeff",
-        "protocol": Protocol.sequence_to_value
+        "protocol": "sequence_to_value"
     },
     "bind": {
         "splits": [
@@ -26,7 +24,7 @@ FLIP_DATASETS = {
         ]
         ,
         "recommended_evaluation_metric": "f1_score",
-        "protocol": Protocol.residue_to_class
+        "protocol": "residue_to_class"
     },
     "conservation": {
         "splits": [
@@ -34,7 +32,7 @@ FLIP_DATASETS = {
         ]
         ,
         "recommended_evaluation_metric": "accuracy",
-        "protocol": Protocol.residue_to_class
+        "protocol": "residue_to_class"
     },
     "gb1": {
         "splits": [
@@ -46,7 +44,7 @@ FLIP_DATASETS = {
         ]
         ,
         "recommended_evaluation_metric": "spearmans-corr-coeff",
-        "protocol": Protocol.sequence_to_value
+        "protocol": "sequence_to_value"
     },
     "meltome": {
         "splits": [
@@ -56,7 +54,7 @@ FLIP_DATASETS = {
         ]
         ,
         "recommended_evaluation_metric": "spearmans-corr-coeff",
-        "protocol": Protocol.sequence_to_value
+        "protocol": "sequence_to_value"
     },
     "scl": {
         "splits": [
@@ -69,7 +67,7 @@ FLIP_DATASETS = {
         ]
         ,
         "recommended_evaluation_metric": "accuracy",
-        "protocol": Protocol.residues_to_class
+        "protocol": "residues_to_class"
     },
     "sav": {
         "splits": [
@@ -79,7 +77,7 @@ FLIP_DATASETS = {
         ]
         ,
         "recommended_evaluation_metric": "f1_score",
-        "protocol": Protocol.sequence_to_class
+        "protocol": "sequence_to_class"
     },
     "secondary_structure": {
         "splits": [
@@ -87,6 +85,6 @@ FLIP_DATASETS = {
         ]
         ,
         "recommended_evaluation_metric": "accuracy",
-        "protocol": Protocol.residue_to_class
+        "protocol": "residue_to_class"
     },
 }

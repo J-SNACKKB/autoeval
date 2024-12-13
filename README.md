@@ -13,7 +13,7 @@ where
 - `scl_mixed_soft` indicates the task and the split to be evaluated,
 - `residues_to_class` the protocol used for the tasks,
 - `./results` the output directory,
-- and `--embedder Rostlab/prot_t5_xl_uniref50` the embedder from [bio-embeddings](https://github.com/sacdallago/bio_embeddings) to be used
+- and `--embedder Rostlab/prot_t5_xl_uniref50` the embedder from [biotrainer](https://github.com/sacdallago/biotrainer) to be used
 
 The different options are summarized below.
 
@@ -21,16 +21,14 @@ The different options are summarized below.
 
 1. Make sure you have [poetry](https://python-poetry.org/) installed: 
 ```bash
-curl -sSL https://install.python-poetry.org/ | python3 - --version 1.4.2
+curl -sSL https://install.python-poetry.org/ | python3 - --version 1.8.3
 ```
 
 2. Install dependencies and biotrainer via `poetry`:
 ```bash
 # In the base directory:
 poetry install
-# Optional: Add bio-embeddings to compute embeddings
-poetry install --extras "bio-embeddings"
-# You can also install all extras at once
+# Optional: Add biotrainer to run cli and training
 poetry install --all-extras
 ```
 
