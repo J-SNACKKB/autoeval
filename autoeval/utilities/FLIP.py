@@ -23,7 +23,7 @@ FLIP_DATASETS = {
             "one_vs_sn"
         ]
         ,
-        "recommended_evaluation_metric": "f1_score",
+        "recommended_evaluation_metric": "macro-f1_score",
         "protocol": "residue_to_class"
     },
     "conservation": {
