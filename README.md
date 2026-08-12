@@ -1,4 +1,8 @@
-# AutoEval
+# ⚠️ AutoEval has been moved
+
+AutoEval has been moved to [biotrainer](https://github.com/sacdallago/biotrainer) and is now maintained there. This repo is archived and no longer maintained. 
+
+# Legacy: AutoEval
 
 This repository contains AutoEval, a module for a fast and easy evaluation of FLIP benchmarking tasks. It uses [biotrainer](https://github.com/sacdallago/biotrainer) to train the task-specific models and [bio-embeddings](https://github.com/sacdallago/bio_embeddings) or custom embedders to embed proteins.
 
